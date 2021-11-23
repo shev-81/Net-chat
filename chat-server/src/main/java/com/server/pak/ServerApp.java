@@ -1,29 +1,27 @@
 package com.server.pak;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServerApp {
-    public static void main(String[] args) {
-        Socket socket=null;
+    private List<ClientHandler> clients;
+
+    public List<ClientHandler> getClients() {
+        return clients;
+    }
+
+    Socket socket=null;
+    ServerApp(){
+        clients = new ArrayList<>();
         try(ServerSocket serverSocket = new ServerSocket(8189)){
-            System.out.println("Server Online...waiting connect user!");
-            // Ожидание подключения
-            socket = serverSocket.accept();
-            System.out.println("User connected!");
-            DataInputStream in = new DataInputStream(socket.getInputStream());
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-            while (true) {
-                String str = in.readUTF();
-                if (str.equals("/end")) {    // если пришло сообщение о закрытии закрываем подключение
-                    System.out.println("[Server]: Server is closed!");
-                    break;
-                }
-                out.writeUTF("[Server]: " + str);
-                System.out.println("[User]: "+str);
+            while(true){
+                System.out.println("Server wait connected User.");
+                socket = serverSocket.accept();
+                System.out.println("User connected.");
+                new ClientHandler(this,socket);
             }
         }catch (IOException e){
             e.printStackTrace();

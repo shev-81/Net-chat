@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
     private FXMLLoader loader;
     private sampleController controller;
+    ServerApp server;
     public void start(Stage primaryStage) throws Exception{
         loader = new FXMLLoader(getClass().getResource("/sample.fxml"));
         Parent root = loader.load();
@@ -20,8 +21,12 @@ public class Main extends Application {
         primaryStage.show();
     }
     public void stop(){
-        controller = loader.getController();
-        controller.closeConnection();
+        controller = loader.getController();   // Обращаемся к классу контроллера и забираем ссылку на сервер
+        server=controller.server;
+        for(ClientHandler client: server.getClients()){     // закрываем для всех клиентов сервера соединения.
+            client.closeConnection();
+        }
+
     }
 
 
