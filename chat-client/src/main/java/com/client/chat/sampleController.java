@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class sampleController{
-    private final String SERVER_ADDR = "192.168.1.205";
+    private final String SERVER_ADDR = "localhost";  //192.168.1.205";
     private final int SERVER_PORT = 8189;
     private Socket socket;
     private DataInputStream in;
@@ -35,7 +35,6 @@ public class sampleController{
     }
     @FXML
     public void clikButton_1(){
-        textArea.appendText("[User]: "+textField.getText()+"\n");
         sendMessage();
         textField.clear();
         textField.requestFocus();
@@ -65,7 +64,7 @@ public class sampleController{
     public void sendMessage() {
         if (!textField.getText().trim().isEmpty()) {
             try {
-                out.writeUTF("["+userName+"]: "+textField.getText());
+                out.writeUTF(textField.getText());
             } catch (IOException e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Ошибка отправки сообщения");
