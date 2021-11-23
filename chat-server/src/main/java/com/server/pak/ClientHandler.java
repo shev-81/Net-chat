@@ -6,41 +6,44 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class ClientHandler {
-    private ServerApp server;
     private Socket socket;
     private DataInputStream in;
     private DataOutputStream out;
-    private String str;
+    private String name;
+    ServerApp serverApp;
 
-    public ClientHandler(ServerApp server, Socket socket) throws IOException {
-        this.server = server;
+
+    public ClientHandler(ServerApp serverApp, Socket socket) throws IOException {
+        this.serverApp =serverApp;
         this.socket = socket;
-        in = new DataInputStream(socket.getInputStream());
-        out = new DataOutputStream(socket.getOutputStream());
-        server.getClients().add(this);                          // Добавляем нового клиента к списку клиаентов на сервере
+        this.in = new DataInputStream(socket.getInputStream());
+        this.out = new DataOutputStream(socket.getOutputStream());
+        this.name="User";
         new Thread(()->{
             readMessages();
-        });
+        }).start();
     }
     public void readMessages(){
         while (true){
             try {
-                str = in.readUTF();
-                if (str.equals("/end")) {    // если пришло сообщение о закрытии закрываем подключение
+                String str = in.readUTF();
+                if (str.toLowerCase().contains("/end")) {    // если пришло сообщение о закрытии закрываем подключение
                     System.out.println("[Server]: Server is closed!");
+                    serverApp.sendAll("user disconnected");
+                    //sendMessage("user disconnected");
+                    closeConnection();
                     break;
                 }
-                sendMessage();
+                serverApp.sendAll(str);
+                //sendMessage(str);
             } catch (IOException e) {
                 e.printStackTrace();
-            }finally {
-                closeConnection();
             }
         }
     }
-    public void sendMessage(){
+    public void sendMessage(String string){
         try {
-            out.writeUTF("Echo "+str);
+            out.writeUTF("Echo "+string);
         } catch (IOException e) {
             e.printStackTrace();
         }
