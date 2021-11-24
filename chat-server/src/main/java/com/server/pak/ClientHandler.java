@@ -1,5 +1,7 @@
 package com.server.pak;
-
+/**
+ * Домашнее задание Шевеленко Андрея к 7 лекции Java 2
+ */
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -60,9 +62,12 @@ public class ClientHandler {
         while (true){
             String str = in.readUTF();
             System.out.println("от" +name+ ": "+ str);
+            if (str.toLowerCase().contains("/w")){
+                sendPrivateMessage(str);
+                continue;
+            }
             if (str.toLowerCase().contains("/end")) {     // если пришло сообщение о закрытии закрываем подключение
                 System.out.println("[Server]: "+name+" disconnected!");
-                serverApp.sendAll(name+" disconnected");
                 return;
             }
             serverApp.sendAll(name+": "+str);
@@ -73,6 +78,15 @@ public class ClientHandler {
             out.writeUTF(string);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+    public void sendPrivateMessage(String str){
+        String [] parts = str.split("\\s");
+        if(serverApp.isNickBusy(parts[1])){
+            this.sendMessage(name+": "+parts[2]);
+            serverApp.getClient(parts[1]).sendMessage(name+": "+parts[2]);
+        }else{
+            sendMessage("пользователя: "+parts[1]+" нет в сети.");
         }
     }
     public void closeConnection() {

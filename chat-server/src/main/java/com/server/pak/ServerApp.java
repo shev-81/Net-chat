@@ -1,5 +1,7 @@
 package com.server.pak;
-
+/**
+ * Домашнее задание Шевеленко Андрея к 7 лекции Java 2
+ */
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -7,8 +9,9 @@ import java.util.ArrayList;
 
 public class ServerApp {
     private ArrayList<ClientHandler> clients;
-    Socket socket=null;
+    private Socket socket=null;
     private AuthService authService;
+
 
     public AuthService getAuthService() {
         return authService;
@@ -28,8 +31,11 @@ public class ServerApp {
             System.out.println("Ошибка на сервере.");
         }
     }
-    public ArrayList<ClientHandler> getClients() {
-        return clients;
+    public ClientHandler getClient(String name) {
+        for(ClientHandler client: clients){
+            if(client.getName().equals(name)) return client;
+        }
+        return null;
     }
     public synchronized void sendAll(String str){
         for(ClientHandler client: clients){
