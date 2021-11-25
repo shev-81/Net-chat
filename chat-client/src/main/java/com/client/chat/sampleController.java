@@ -46,7 +46,7 @@ public class sampleController{
     @FXML
     private void noAutorizedTimer(){
         try {
-            Thread.sleep(15000);
+            Thread.sleep(20000);
             if(!isAutorized()) {
                 textArea.appendText("Нет авторизации, вы отключены.");
                 Thread.sleep(3000);
