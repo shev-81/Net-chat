@@ -63,11 +63,11 @@ public class ClientHandler {
                         return;
                     }else{
                         sendMessage("Учетная запись используется");
-                        sendMessage("/authno");
+                        sendMessage("/autno");
                     }
                 }else {
                     sendMessage("Не верный логин или пароль.");
-                    sendMessage("/authno");
+                    sendMessage("/autno");
                 }
             }
         }

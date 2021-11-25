@@ -93,7 +93,7 @@ public class sampleController{
                         textArea.appendText("Вы авторизованны.\n");
                         continue;
                     }
-                    if(strFromServer.contains("/authno")){
+                    if(strFromServer.contains("/autno")){
                         resetTimerCount();
                         textArea.appendText("Попробуйте еще раз.\n");
                         continue;
