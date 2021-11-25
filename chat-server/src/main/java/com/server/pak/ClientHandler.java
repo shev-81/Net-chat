@@ -1,11 +1,12 @@
 package com.server.pak;
 /**
- * Домашнее задание Шевеленко Андрея к 7 лекции Java 2
+ * Домашнее задание Шевеленко Андрея к 8 лекции Java 2
  */
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ClientHandler {
     private Socket socket;
@@ -29,7 +30,10 @@ public class ClientHandler {
                 try {
                     autentification();
                     readMessages();
-                } catch (IOException e) {
+                }catch (SocketException e) {
+                    e.toString();
+                }
+                catch (IOException e) {
                     e.printStackTrace();
                 } finally {
                     closeConnection();
@@ -39,13 +43,13 @@ public class ClientHandler {
             throw new RuntimeException ("Ошибка при создании слушателя клиента... ");
         }
     }
-    public void autentification() throws IOException{
+    public void autentification() throws IOException,SocketException{
         while (true){
             sendMessage("Введите логин или пароль. \n /auth login pass");
             String str = in.readUTF();
             if (str.toLowerCase().contains("/end")) {     // если пришло сообщение о закрытии закрываем подключение
-                System.out.println("[Server]: "+name+" disconnected!");
-                closeConnection();
+                System.out.println("[Server]: Unknow User disconnected!");
+                throw new SocketException("потльзователь не подтвердил авторизацию ");
             }
             if (str.startsWith("/auth")) {    // если пришло сообщение о регистрации
                 String [] parts = str.split("\\s");
@@ -65,7 +69,7 @@ public class ClientHandler {
     public void readMessages() throws IOException{
         while (true){
             String str = in.readUTF();
-            System.out.println("от" +name+ ": "+ str);
+            System.out.println("от " +name+ ": "+ str);
             if (str.toLowerCase().contains("/w")){
                 sendPrivateMessage(str);
                 continue;

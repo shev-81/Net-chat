@@ -1,6 +1,6 @@
 package com.server.pak;
 /**
- * Домашнее задание Шевеленко Андрея к 7 лекции Java 2
+ * Домашнее задание Шевеленко Андрея к 8 лекции Java 2
  */
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -19,7 +19,7 @@ public class ServerApp {
 
     ServerApp(){
         clients = new ArrayList<>();            // инициализируем список
-        authService = new AuthServiceClass();   // инициализируем список возможжных User/ov  на сервере
+        authService = new AuthServiceClass();   // инициализируем список возможжных User/ov на сервере
         try(ServerSocket serverSocket = new ServerSocket(8189)){
             while(true){
                 System.out.println("Server wait connected User.");
