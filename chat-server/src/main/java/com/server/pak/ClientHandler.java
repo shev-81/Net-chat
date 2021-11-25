@@ -43,6 +43,10 @@ public class ClientHandler {
         while (true){
             sendMessage("Введите логин или пароль. \n /auth login pass");
             String str = in.readUTF();
+            if (str.toLowerCase().contains("/end")) {     // если пришло сообщение о закрытии закрываем подключение
+                System.out.println("[Server]: "+name+" disconnected!");
+                closeConnection();
+            }
             if (str.startsWith("/auth")) {    // если пришло сообщение о регистрации
                 String [] parts = str.split("\\s");
                 String nickName = serverApp.getAuthService().getNickByLoginPass(parts[1],parts[2]);
@@ -67,6 +71,8 @@ public class ClientHandler {
                 continue;
             }
             if (str.toLowerCase().contains("/end")) {     // если пришло сообщение о закрытии закрываем подключение
+                serverApp.sendAll(name+": disconected.");
+                serverApp.unSubscribe(this);
                 System.out.println("[Server]: "+name+" disconnected!");
                 return;
             }
@@ -90,8 +96,6 @@ public class ClientHandler {
         }
     }
     public void closeConnection() {
-        serverApp.sendAll(name+": disconected.");
-        serverApp.unSubscribe(this);
         try {
             in.close();
             out.close();

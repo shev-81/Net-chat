@@ -20,7 +20,15 @@ public class sampleController{
     private DataInputStream in;
     private DataOutputStream out;
     private String strFromServer;
-    private String userName = "User";
+    private String strFromClient;
+    private boolean autorized = false;
+    private Thread noTimerThr = null;
+    public boolean isAutorized() {
+        return autorized;
+    }
+    public void setAutorized(boolean autorized) {
+        this.autorized = autorized;
+    }
     @FXML
     TextField textField;
     @FXML
@@ -28,14 +36,32 @@ public class sampleController{
     @FXML
     public void initialize(){
         try {
+            noTimerThr = new Thread(()->noAutorizedTimer());
+            noTimerThr.start();
             openConnection();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     @FXML
+    private void noAutorizedTimer(){
+        try {
+            Thread.sleep(12000);
+            if(!isAutorized()) {
+                textArea.appendText("Нет авторизации, вы отключены.");
+                Thread.sleep(3000);
+                sendMessage("/end");
+                closeConnection();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
     public void clikButton_1(){
-        sendMessage();
+        if (!textField.getText().trim().isEmpty())
+            strFromClient=textField.getText();
+        sendMessage(strFromClient);
         textField.clear();
         textField.requestFocus();
     }
@@ -47,11 +73,17 @@ public class sampleController{
         new Thread(() -> {
             try {
                 while (true) {
+                    if(!noTimerThr.isAlive())
+                        if(!isAutorized()) break;
                     if(textArea.getText().toLowerCase().contains("/end")){
-                        sendMessage();
+                        strFromClient = textArea.getText();
+                        sendMessage(strFromClient);
                         Platform.exit();
                     }
                     strFromServer = in.readUTF();
+                    if(strFromServer.contains("/authok")){
+                        setAutorized(true);
+                    }
                     textArea.appendText(strFromServer);
                     textArea.appendText("\n");
                 }
@@ -61,29 +93,20 @@ public class sampleController{
         }).start();
     }
     @FXML
-    public void sendMessage() {
-        if (!textField.getText().trim().isEmpty()) {
-            try {
-                out.writeUTF(textField.getText());
-            } catch (IOException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Ошибка отправки сообщения");
-            }
+    public void sendMessage(String str) {
+        try {
+            out.writeUTF(str);
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Ошибка отправки сообщения");
         }
     }
+
     @FXML
     public void closeConnection() {
         try {
             in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
             out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();
