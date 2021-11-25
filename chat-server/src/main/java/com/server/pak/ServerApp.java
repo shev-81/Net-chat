@@ -11,12 +11,9 @@ public class ServerApp {
     private ArrayList<ClientHandler> clients;
     private Socket socket=null;
     private AuthService authService;
-
-
     public AuthService getAuthService() {
         return authService;
     }
-
     ServerApp(){
         clients = new ArrayList<>();            // инициализируем список
         authService = new AuthServiceClass();   // инициализируем список возможжных User/ov на сервере
@@ -55,5 +52,4 @@ public class ServerApp {
     }public synchronized void unSubscribe(ClientHandler o) {
         clients.remove(o);
     }
-
 }
