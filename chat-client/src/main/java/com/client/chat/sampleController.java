@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class sampleController{
-    private final String SERVER_ADDR = "localhost";  //192.168.1.205";
+    private final String SERVER_ADDR = "192.168.1.205";  //192.168.1.205";
     private final int SERVER_PORT = 8189;
     private Socket socket;
     private DataInputStream in;
@@ -23,6 +23,11 @@ public class sampleController{
     private String strFromClient;
     private boolean autorized = false;
     private Thread noTimerThr = null;
+    private int timerCount=60;
+
+    public void resetTimerCount() {
+        this.timerCount = 15;
+    }
     public boolean isAutorized() {
         return autorized;
     }
@@ -46,9 +51,11 @@ public class sampleController{
     @FXML
     private void noAutorizedTimer(){
         try {
-            Thread.sleep(15000);
+            while(timerCount>0){
+                Thread.sleep(1000);
+            }
             if(!isAutorized()) {
-                textArea.appendText("Нет авторизации, вы отключены.");
+                textArea.appendText("Вы отключены.");
                 Thread.sleep(3000);
                 sendMessage("/end");
                 closeConnection();
@@ -83,7 +90,12 @@ public class sampleController{
                     strFromServer = in.readUTF();
                     if(strFromServer.contains("/authok")){
                         setAutorized(true);
-                        textArea.appendText("\nВы авторизованны.");
+                        textArea.appendText("Вы авторизованны.\n");
+                        continue;
+                    }
+                    if(strFromServer.contains("/authno")){
+                        resetTimerCount();
+                        textArea.appendText("Попробуйте еще раз.\n");
                         continue;
                     }
                     textArea.appendText(strFromServer);

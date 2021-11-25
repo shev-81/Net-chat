@@ -45,11 +45,11 @@ public class ClientHandler {
     }
     public void autentification() throws IOException,SocketException{
         while (true){
-            sendMessage("Введите логин или пароль. \n /auth login pass");
+            sendMessage("Введите логин или пароль. \n/auth login pass");
             String str = in.readUTF();
             if (str.toLowerCase().contains("/end")) {     // если пришло сообщение о закрытии закрываем подключение
                 System.out.println("[Server]: Unknow User disconnected!");
-                throw new SocketException("потльзователь не подтвердил авторизацию ");
+                throw new SocketException("потльзователь не подтвердил авторизацию.");
             }
             if (str.startsWith("/auth")) {    // если пришло сообщение о регистрации
                 String [] parts = str.split("\\s");
@@ -61,8 +61,14 @@ public class ClientHandler {
                         serverApp.sendAll(name+" присоединился.");
                         serverApp.subscribe(this);
                         return;
-                    }else{sendMessage("Учетная запись используется");}
-                }else {sendMessage("Не верный логин или пароль.");}
+                    }else{
+                        sendMessage("Учетная запись используется");
+                        sendMessage("/authno");
+                    }
+                }else {
+                    sendMessage("Не верный логин или пароль.");
+                    sendMessage("/authno");
+                }
             }
         }
     }
@@ -75,7 +81,7 @@ public class ClientHandler {
                 continue;
             }
             if (str.toLowerCase().contains("/end")) {     // если пришло сообщение о закрытии закрываем подключение
-                serverApp.sendAll(name+": disconected.");
+                serverApp.sendAll("\n"+name+": disconected.");
                 serverApp.unSubscribe(this);
                 System.out.println("[Server]: "+name+" disconnected!");
                 return;
