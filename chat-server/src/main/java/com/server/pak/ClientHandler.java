@@ -81,7 +81,7 @@ public class ClientHandler {
                 continue;
             }
             if (str.toLowerCase().contains("/end")) {     // если пришло сообщение о закрытии закрываем подключение
-                serverApp.sendAll("\n"+name+": disconected.");
+                serverApp.sendAll(name+": disconected.\n");
                 serverApp.unSubscribe(this);
                 System.out.println("[Server]: "+name+" disconnected!");
                 return;

@@ -92,7 +92,6 @@ public class sampleController{
                         continue;
                     }
                     if(strFromServer.contains("/autno")){
-                        resetTimerCount();
                         textArea.appendText("Попробуйте еще раз.\n");
                         continue;
                     }
