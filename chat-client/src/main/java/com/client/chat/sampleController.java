@@ -23,11 +23,7 @@ public class sampleController{
     private String strFromClient;
     private boolean autorized = false;
     private Thread noTimerThr = null;
-    private int timerCount=60;
 
-    public void resetTimerCount() {
-        this.timerCount = 15;
-    }
     public boolean isAutorized() {
         return autorized;
     }
@@ -51,7 +47,7 @@ public class sampleController{
     @FXML
     private void noAutorizedTimer(){
         try {
-            Thread.sleep(20000);
+            Thread.sleep(30000);
             if(!isAutorized()) {
                 textArea.appendText("Вы отключены.");
                 Thread.sleep(3000);
@@ -71,10 +67,22 @@ public class sampleController{
         textField.requestFocus();
     }
     @FXML
+    public synchronized void autorizQuestion(){
+        new Thread (()->{
+            try {
+                Thread.sleep(1000);
+                sendMessage("/auth "+JOptionPane.showInputDialog ("Введите логин и пароль через пробел."));
+            } catch (Exception e) {
+                System.out.println("Не введены вовремя логин и пароль ");
+            }
+            }).start();
+    }
+    @FXML
     public void openConnection() throws IOException {
         socket = new Socket(SERVER_ADDR, SERVER_PORT);
         in = new DataInputStream(socket.getInputStream());
         out = new DataOutputStream(socket.getOutputStream());
+        autorizQuestion();
         new Thread(() -> {
             try {
                 while (true) {
@@ -93,6 +101,7 @@ public class sampleController{
                     }
                     if(strFromServer.contains("/autno")){
                         textArea.appendText("Попробуйте еще раз.\n");
+                        autorizQuestion();
                         continue;
                     }
                     textArea.appendText(strFromServer);
@@ -108,7 +117,6 @@ public class sampleController{
         try {
             out.writeUTF(str);
         } catch (IOException e) {
-            e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Ошибка отправки сообщения");
         }
     }

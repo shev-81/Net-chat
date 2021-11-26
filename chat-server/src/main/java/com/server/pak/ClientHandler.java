@@ -2,6 +2,7 @@ package com.server.pak;
 /**
  * Домашнее задание Шевеленко Андрея к 8 лекции Java 2
  */
+import javax.swing.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -13,6 +14,7 @@ public class ClientHandler {
     private DataInputStream in;
     private DataOutputStream out;
     private String name;
+    private String nickName;
     ServerApp serverApp;
 
     public String getName() {
@@ -45,7 +47,7 @@ public class ClientHandler {
     }
     public void autentification() throws IOException,SocketException{
         while (true){
-            sendMessage("Введите логин или пароль. \n/auth login pass");
+//            sendMessage("Введите логин или пароль. \n/auth login pass");
             String str = in.readUTF();
             if (str.toLowerCase().contains("/end")) {     // если пришло сообщение о закрытии закрываем подключение
                 System.out.println("[Server]: Unknow User disconnected!");
@@ -53,7 +55,11 @@ public class ClientHandler {
             }
             if (str.startsWith("/auth")) {    // если пришло сообщение о регистрации
                 String [] parts = str.split("\\s");
-                String nickName = serverApp.getAuthService().getNickByLoginPass(parts[1],parts[2]);
+                try {
+                    nickName = serverApp.getAuthService().getNickByLoginPass(parts[1], parts[2]);
+                }catch (Exception e){
+                    nickName=null;
+                }
                 if(nickName!=null){
                     if(!serverApp.isNickBusy(nickName)){
                         sendMessage("/authok" +nickName);
