@@ -4,6 +4,7 @@ package com.client.chat;
  */
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
@@ -12,8 +13,10 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class sampleController{
+public class sampleController implements Initializable {
     private final String SERVER_ADDR = "192.168.1.205";  //192.168.1.205";
     private final int SERVER_PORT = 8189;
     private Socket socket;
@@ -34,8 +37,8 @@ public class sampleController{
     TextField textField;
     @FXML
     TextArea textArea;
-    @FXML
-    public void initialize(){
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
         try {
             noTimerThr = new Thread(()->noAutorizedTimer());
             noTimerThr.start();
@@ -88,18 +91,20 @@ public class sampleController{
                 while (true) {
                     if(!noTimerThr.isAlive())
                         if(!isAutorized()) break;
-                    if(textArea.getText().toLowerCase().contains("/end")){
-                        strFromClient = textArea.getText();
-                        sendMessage(strFromClient);
+                    strFromServer = in.readUTF();
+                    if(strFromServer.contains("/end")){
+                        closeConnection();
                         Platform.exit();
                     }
-                    strFromServer = in.readUTF();
-                    if(strFromServer.contains("/authok")){
+                    if(strFromServer.contains("/authok")){                  // при успешной авторизации сервер со служебной строкой присылает строку список всех авторизованных клиентов
+                        String [] parts = strFromServer.split("\\s+"); // разбиваем ее на части в массив
                         setAutorized(true);
                         textArea.appendText("Вы авторизованны.\n");
+                        for (int i=1; i<parts.length;i++)                   //выводим в текстовое поле список имен пропуская первый элемент со служебной командой
+                            textArea.appendText(parts[i]+"\n");
                         continue;
                     }
-                    if(strFromServer.contains("/autno")){
+                    if(strFromServer.contains("/authno")){
                         textArea.appendText("Попробуйте еще раз.\n");
                         autorizQuestion();
                         continue;

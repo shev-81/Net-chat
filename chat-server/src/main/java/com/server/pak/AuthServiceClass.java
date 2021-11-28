@@ -17,7 +17,7 @@ public class AuthServiceClass implements AuthService{
     }
     AuthServiceClass(){
         listUser = new ArrayList<>();
-        listUser.add(new Users("Shev","shev-81@mail.ru","andrey210881"));
+        listUser.add(new Users("Shev","shev","shev"));
         listUser.add(new Users("Anna","anna","anna"));
         listUser.add(new Users("Ulya","ulya","ulya"));
     }

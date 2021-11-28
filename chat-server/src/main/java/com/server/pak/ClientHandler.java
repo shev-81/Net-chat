@@ -2,7 +2,6 @@ package com.server.pak;
 /**
  * Домашнее задание Шевеленко Андрея к 8 лекции Java 2
  */
-import javax.swing.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -15,6 +14,7 @@ public class ClientHandler {
     private DataOutputStream out;
     private String name;
     private String nickName;
+    private String usersList;
     ServerApp serverApp;
 
     public String getName() {
@@ -47,14 +47,13 @@ public class ClientHandler {
     }
     public void autentification() throws IOException,SocketException{
         while (true){
-//            sendMessage("Введите логин или пароль. \n/auth login pass");
             String str = in.readUTF();
             if (str.toLowerCase().contains("/end")) {     // если пришло сообщение о закрытии закрываем подключение
                 System.out.println("[Server]: Unknow User disconnected!");
                 throw new SocketException("потльзователь не подтвердил авторизацию.");
             }
             if (str.startsWith("/auth")) {    // если пришло сообщение о регистрации
-                String [] parts = str.split("\\s");
+                String [] parts = str.split("\\s+");
                 try {
                     nickName = serverApp.getAuthService().getNickByLoginPass(parts[1], parts[2]);
                 }catch (Exception e){
@@ -62,18 +61,18 @@ public class ClientHandler {
                 }
                 if(nickName!=null){
                     if(!serverApp.isNickBusy(nickName)){
-                        sendMessage("/authok" +nickName);
                         name=nickName;
                         serverApp.sendAll(name+" присоединился.");
                         serverApp.subscribe(this);
+                        sendMessage("/authok " +serverApp.getClientsList());
                         return;
                     }else{
                         sendMessage("Учетная запись используется");
-                        sendMessage("/autno");
+                        sendMessage("/authno");
                     }
                 }else {
                     sendMessage("Не верный логин или пароль.");
-                    sendMessage("/autno");
+                    sendMessage("/authno");
                 }
             }
         }
@@ -88,6 +87,7 @@ public class ClientHandler {
             }
             if (str.toLowerCase().contains("/end")) {     // если пришло сообщение о закрытии закрываем подключение
                 serverApp.sendAll(name+": disconected.\n");
+                sendMessage("/end");
                 serverApp.unSubscribe(this);
                 System.out.println("[Server]: "+name+" disconnected!");
                 return;

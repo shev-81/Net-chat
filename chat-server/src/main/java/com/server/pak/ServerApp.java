@@ -28,6 +28,15 @@ public class ServerApp {
             System.out.println("Ошибка на сервере.");
         }
     }
+
+    public String getClientsList() {
+        String clientsList = "";
+        for(ClientHandler client: clients){
+            clientsList = clientsList+client.getName()+" ";
+        }
+        return clientsList;
+    }
+
     public ClientHandler getClient(String name) {
         for(ClientHandler client: clients){
             if(client.getName().equals(name)) return client;
