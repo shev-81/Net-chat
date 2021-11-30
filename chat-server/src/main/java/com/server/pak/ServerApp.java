@@ -28,15 +28,13 @@ public class ServerApp {
             System.out.println("Ошибка на сервере.");
         }
     }
-
     public String getClientsList() {
-        String clientsList = "";
+        StringBuilder clientsList = new StringBuilder();
         for(ClientHandler client: clients){
-            clientsList = clientsList+client.getName()+" ";
+            clientsList.append(client.getName()+" ");
         }
-        return clientsList;
+        return clientsList.toString();
     }
-
     public ClientHandler getClient(String name) {
         for(ClientHandler client: clients){
             if(client.getName().equals(name)) return client;
@@ -58,7 +56,8 @@ public class ServerApp {
     }
     public synchronized void subscribe(ClientHandler o) {
         clients.add(o);
-    }public synchronized void unSubscribe(ClientHandler o) {
+    }
+    public synchronized void unSubscribe(ClientHandler o) {
         clients.remove(o);
     }
 }

@@ -52,7 +52,7 @@ public class ClientHandler {
                 System.out.println("[Server]: Unknow User disconnected!");
                 throw new SocketException("потльзователь не подтвердил авторизацию.");
             }
-            if (str.startsWith("/auth")) {    // если пришло сообщение о регистрации
+            if (str.startsWith("/auth")) {    // если пришел запрос о проверки регистрации
                 String [] parts = str.split("\\s+");
                 try {
                     nickName = serverApp.getAuthService().getNickByLoginPass(parts[1], parts[2]);
@@ -63,8 +63,9 @@ public class ClientHandler {
                     if(!serverApp.isNickBusy(nickName)){
                         name=nickName;
                         serverApp.sendAll(name+" присоединился.");
+                        serverApp.sendAll("/conected "+name);
                         serverApp.subscribe(this);
-                        sendMessage("/authok " +serverApp.getClientsList());
+                        sendMessage("/authok "+serverApp.getClientsList());
                         return;
                     }else{
                         sendMessage("Учетная запись используется");
@@ -80,15 +81,15 @@ public class ClientHandler {
     public void readMessages() throws IOException{
         while (true){
             String str = in.readUTF();
-            System.out.println("от " +name+ ": "+ str);
-            if (str.toLowerCase().contains("/w")){
+            System.out.println("от " +name+ ": "+str);
+            if (str.toLowerCase().startsWith("/w")){   //  "/w nickName msg....."
                 sendPrivateMessage(str);
                 continue;
             }
-            if (str.toLowerCase().contains("/end")) {     // если пришло сообщение о закрытии закрываем подключение
-                serverApp.sendAll(name+": disconected.\n");
-                sendMessage("/end");
+            if (str.toLowerCase().startsWith("/end")) {     // если пришло сообщение о закрытии закрываем подключение
                 serverApp.unSubscribe(this);
+                serverApp.sendAll(name+" отключился.");
+                serverApp.sendAll("/disconected "+name);
                 System.out.println("[Server]: "+name+" disconnected!");
                 return;
             }
@@ -98,17 +99,24 @@ public class ClientHandler {
     public void sendMessage(String string){
         try {
             out.writeUTF(string);
-        } catch (IOException e) {
+        }catch (SocketException e) {
+            System.out.println("Пользователь разорвал соединение.");
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
     public void sendPrivateMessage(String str){
-        String [] parts = str.split("\\s");
-        if(serverApp.isNickBusy(parts[1])){
-            this.sendMessage(name+": "+parts[2]);
-            serverApp.getClient(parts[1]).sendMessage(name+": "+parts[2]);
+        String [] parts = str.split("\\s+");
+        StringBuilder msg = new StringBuilder();    // создаем строку сообщения ен учитывая служебные команды
+        for (int i=2; i<parts.length;i++){          // собираем оставшуюся строку в сообщение
+            msg.append(parts[i]).append(" ");
+        }
+        if(serverApp.isNickBusy(parts[1])){         // если имя занято то клиент есть и посылаем ему сообщение
+            this.sendMessage(name+": "+ msg);  // дубль сообщения себе в чат
+            serverApp.getClient(parts[1]).sendMessage(name+" шепчет: "+ msg);  // и в приват выбранному имени
         }else{
-            sendMessage("пользователя: "+parts[1]+" нет в сети.");
+            sendMessage(parts[1]+" нет в сети.");
         }
     }
     public void closeConnection() {

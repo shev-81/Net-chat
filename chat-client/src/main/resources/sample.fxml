@@ -4,9 +4,12 @@
 <?import javafx.scene.layout.*?>
 
 <VBox alignment="center" xmlns="http://javafx.com/javafx/8.0.281" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.client.chat.sampleController">
-   <TextArea id="textAreaID" fx:id="textArea" editable="false" styleClass="text-area" stylesheets="@style.css" wrapText="true" VBox.vgrow="ALWAYS" />
+   <HBox VBox.vgrow="ALWAYS">
+      <TextArea id="textAreaID1" fx:id="textArea" editable="false" prefWidth="300.0" styleClass="text-area" stylesheets="@style.css" wrapText="true"  />
+      <ListView fx:id="listFx" prefWidth="100.0" prefHeight="475" stylesheets="@style.css" onMouseClicked="#moseClickOnListItem" HBox.hgrow="ALWAYS" />
+   </HBox>
    <HBox>
-      <TextField fx:id="textField" onAction="#clikButton_1" prefHeight="25.0" prefWidth="230.0" promptText="Сообщение" />
-      <Button fx:id="sendButton" onAction="#clikButton_1" prefHeight="25.0" prefWidth="70.0" text="Послать" textAlignment="RIGHT" />
+      <TextField fx:id="textField" onAction="#clikButton_1" prefHeight="25.0" prefWidth="300.0" promptText="Сообщение" />
+      <Button fx:id="sendButton" onAction="#clikButton_1" prefHeight="25.0" prefWidth="100.0" text="Послать" textAlignment="RIGHT" />
    </HBox>
 </VBox>

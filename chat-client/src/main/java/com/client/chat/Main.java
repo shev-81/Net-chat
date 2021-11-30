@@ -13,13 +13,15 @@ public class Main extends Application {
     private sampleController controller;
     public void start(Stage primaryStage) throws Exception{
         loader = new FXMLLoader(getClass().getResource("/sample.fxml"));
+        controller = loader.getController();
         Parent root = loader.load();
         primaryStage.setTitle("Net-chat");
-        primaryStage.setScene(new Scene(root, 300, 500));
+        primaryStage.setScene(new Scene(root, 400, 500));
         primaryStage.show();
     }
     public void stop(){
         controller = loader.getController();
+        controller.sendMessage("/end");
         controller.closeConnection();
     }
     public static void main(String[] args) {
