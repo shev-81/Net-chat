@@ -29,8 +29,8 @@ public class sampleController implements Initializable {
     private String strFromServer;
     private String strFromClient;
     private boolean autorized = false;
-    public String userName;
     private Thread noTimerThr = null;
+    public LoginFrame loginFrame;
     public boolean isAutorized() {
         return autorized;
     }
@@ -49,21 +49,9 @@ public class sampleController implements Initializable {
             noTimerThr = new Thread(()->noAutorizedTimer());
             noTimerThr.start();
             openConnection();
+            autorizQuestion();
+            readMsg();
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    @FXML
-    private void noAutorizedTimer(){
-        try {
-            Thread.sleep(120000);
-            if(!isAutorized()) {
-                textArea.appendText("Вы отключены.");
-                Thread.sleep(3000);
-                sendMessage("/end");
-                closeConnection();
-            }
-        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -81,18 +69,15 @@ public class sampleController implements Initializable {
         new Thread (()->{
             try {
                 Thread.sleep(1000);
-                sendMessage("/auth "+JOptionPane.showInputDialog ("Введите логин и пароль через пробел."));
+                loginFrame = new LoginFrame(this);
             } catch (Exception e) {
+                e.printStackTrace();
                 System.out.println("Не введены вовремя логин и пароль ");
             }
-            }).start();
+        }).start();
     }
     @FXML
-    public void openConnection() throws IOException {
-        socket = new Socket(SERVER_ADDR, SERVER_PORT);
-        in = new DataInputStream(socket.getInputStream());
-        out = new DataOutputStream(socket.getOutputStream());
-        autorizQuestion();
+    public void readMsg(){
         new Thread(() -> {
             ObservableList<String> listUserModel = null;
             ArrayList <String> arrUsers = new ArrayList<>();
@@ -140,6 +125,12 @@ public class sampleController implements Initializable {
         }).start();
     }
     @FXML
+    public void openConnection() throws IOException {
+        socket = new Socket(SERVER_ADDR, SERVER_PORT);
+        in = new DataInputStream(socket.getInputStream());
+        out = new DataOutputStream(socket.getOutputStream());
+    }
+    @FXML
     public void sendMessage(String str) {
         try {
             out.writeUTF(str);
@@ -168,5 +159,19 @@ public class sampleController implements Initializable {
                 JOptionPane.showMessageDialog(null, "Ошибка отправки сообщения");
             }
         }).start();
+    }
+    @FXML
+    private void noAutorizedTimer(){
+        try {
+            Thread.sleep(60000);
+            if(!isAutorized()) {
+                textArea.appendText("Вы отключены.");
+                Thread.sleep(3000);
+                sendMessage("/end");
+                closeConnection();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

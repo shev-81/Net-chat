@@ -15,8 +15,10 @@ public class ServerApp {
         return authService;
     }
     ServerApp(){
-        clients = new ArrayList<>();            // инициализируем список
-        authService = new AuthServiceClass();   // инициализируем список возможжных User/ov на сервере
+        clients = new ArrayList<>();                // инициализируем список
+//        authService = new AuthServiceClass();     // инициализируем список возможжных User/ov на сервере
+        authService = new AuthServiceBD();          // инициализируем список возможжных User/ov на сервере
+
         try(ServerSocket serverSocket = new ServerSocket(8189)){
             while(true){
                 System.out.println("Server wait connected User.");
