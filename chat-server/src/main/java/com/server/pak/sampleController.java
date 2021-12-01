@@ -1,4 +1,4 @@
-package com.client.chat;
+package com.server.pak;
 /**
  * Домашнее задание Шевеленко Андрея к 6 лекции Java 2
  */
@@ -11,16 +11,15 @@ import javax.swing.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 public class sampleController{
-    private final String SERVER_ADDR = "localhost";
     private final int SERVER_PORT = 8189;
+    private ServerSocket serverSocket;
     private Socket socket;
     private DataInputStream in;
     private DataOutputStream out;
-    private String strFromServer;
-    private String userName = "User";
     @FXML
     TextField textField;
     @FXML
@@ -35,37 +34,40 @@ public class sampleController{
     }
     @FXML
     public void clikButton_1(){
-        textArea.appendText("[User]: "+textField.getText()+"\n");
+        textArea.appendText("[Server]: "+textField.getText()+"\n");
         sendMessage();
         textField.clear();
         textField.requestFocus();
     }
     @FXML
     public void openConnection() throws IOException {
-        socket = new Socket(SERVER_ADDR, SERVER_PORT);
+        socket=null;
+        serverSocket = new ServerSocket(SERVER_PORT);
+        System.out.println("Server Online...waiting connect user!");
+        // Ожидание подключения
+        socket = serverSocket.accept();
+        System.out.println("User connected!");
         in = new DataInputStream(socket.getInputStream());
         out = new DataOutputStream(socket.getOutputStream());
-        new Thread(() -> {
-            try {
+        new Thread(()->{
+            try{
                 while (true) {
-                    if(textArea.getText().toLowerCase().contains("/end")){
-                        sendMessage();
+                    String str = in.readUTF();
+                    if (textArea.getText().toLowerCase().contains("/end")) {    // если пришло сообщение о закрытии закрываем подключение
+                        System.out.println("[Server]: Server is closed!");
                         Platform.exit();
                     }
-                    strFromServer = in.readUTF();
-                    textArea.appendText(strFromServer);
-                    textArea.appendText("\n");
+                    textArea.appendText(str+"\n");
+                    System.out.println(str);
                 }
-            } catch (Exception e) {
-                Platform.exit();
-            }
+            }catch (IOException e){}
         }).start();
     }
     @FXML
     public void sendMessage() {
         if (!textField.getText().trim().isEmpty()) {
             try {
-                out.writeUTF("["+userName+"]: "+textField.getText());
+                out.writeUTF("[Server]: "+textField.getText());
             } catch (IOException e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Ошибка отправки сообщения");
@@ -86,6 +88,11 @@ public class sampleController{
         }
         try {
             socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            serverSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
