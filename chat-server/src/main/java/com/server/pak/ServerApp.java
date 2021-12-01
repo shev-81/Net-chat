@@ -1,32 +1,64 @@
 package com.server.pak;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+/**
+ * Домашнее задание Шевеленко Андрея к 8 лекции Java 2
+ */
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class ServerApp {
-    public static void main(String[] args) {
-        Socket socket=null;
+    private ArrayList<ClientHandler> clients;
+    private Socket socket=null;
+    private AuthService authService;
+    public AuthService getAuthService() {
+        return authService;
+    }
+    ServerApp(){
+        clients = new ArrayList<>();            // инициализируем список
+        authService = new AuthServiceClass();   // инициализируем список возможжных User/ov на сервере
         try(ServerSocket serverSocket = new ServerSocket(8189)){
-            System.out.println("Server Online...waiting connect user!");
-            // Ожидание подключения
-            socket = serverSocket.accept();
-            System.out.println("User connected!");
-            DataInputStream in = new DataInputStream(socket.getInputStream());
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-            while (true) {
-                String str = in.readUTF();
-                if (str.equals("/end")) {    // если пришло сообщение о закрытии закрываем подключение
-                    System.out.println("[Server]: Server is closed!");
-                    break;
-                }
-                out.writeUTF("[Server]: " + str);
-                System.out.println("[User]: "+str);
+            while(true){
+                System.out.println("Server wait connected User.");
+                socket = serverSocket.accept();
+                System.out.println("User connected.");
+                new ClientHandler(this, socket);
             }
         }catch (IOException e){
-            e.printStackTrace();
+            System.out.println("Ошибка на сервере.");
         }
+    }
+
+    public String getClientsList() {
+        String clientsList = "";
+        for(ClientHandler client: clients){
+            clientsList = clientsList+client.getName()+" ";
+        }
+        return clientsList;
+    }
+
+    public ClientHandler getClient(String name) {
+        for(ClientHandler client: clients){
+            if(client.getName().equals(name)) return client;
+        }
+        return null;
+    }
+    public synchronized void sendAll(String str){
+        for(ClientHandler client: clients){
+            client.sendMessage(str);
+        }
+    }
+    public boolean isNickBusy(String nickName){
+        for(ClientHandler client: clients){
+            if(client.getName().equals(nickName)){
+                return true;
+            }
+        }
+        return false;
+    }
+    public synchronized void subscribe(ClientHandler o) {
+        clients.add(o);
+    }public synchronized void unSubscribe(ClientHandler o) {
+        clients.remove(o);
     }
 }

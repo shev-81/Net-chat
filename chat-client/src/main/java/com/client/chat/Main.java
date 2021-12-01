@@ -1,6 +1,6 @@
 package com.client.chat;
 /**
- * Домашнее задание Шевеленко Андрея к 4 и 6 лекции Java 2
+ * Домашнее задание Шевеленко Андрея к 8 лекции Java 2
  */
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -14,7 +14,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         loader = new FXMLLoader(getClass().getResource("/sample.fxml"));
         Parent root = loader.load();
-        primaryStage.setTitle("Сетевой чат");
+        primaryStage.setTitle("Net-chat");
         primaryStage.setScene(new Scene(root, 300, 500));
         primaryStage.show();
     }
