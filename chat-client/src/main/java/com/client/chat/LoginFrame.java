@@ -13,11 +13,11 @@ public class LoginFrame extends JFrame {
     JCheckBox checkBox;
     sampleController objController;
 
-    LoginFrame(sampleController objController){
+    LoginFrame(sampleController objController) {
         this.objController = objController;
-        setSize(220,200);
+        setSize(220, 200);
         setTitle("login");
-        setDefaultCloseOperation(LoginFrame.DISPOSE_ON_CLOSE );
+        setDefaultCloseOperation(LoginFrame.DISPOSE_ON_CLOSE);
 
         // поле логина
         loginField = new JTextField();
@@ -27,32 +27,34 @@ public class LoginFrame extends JFrame {
         passField = new JTextField();
         passField.setBounds(10, 70, 70, 25);
 
-        // кнопка подтверждения отправки
-        okButton = new JButton("OK");
-        okButton.setBounds(95,25,70,25);
-        okButton.addActionListener(e -> {
-            if(!checkBox.isSelected ()){
-                objController.sendMessage("/auth "+loginField.getText()+" "+passField.getText());
-                dispose();
-            }else{
-                // Регистрация нового пользователя.... и сразу вход в чат.
-            }
-        });
-
         // Поле ввода ник нейма для регистрации
         nickNameField = new JTextField();
         nickNameField.setBounds(10, 115, 70, 25);
         nickNameField.setVisible(false);
 
+        // кнопка подтверждения отправки
+        okButton = new JButton("OK");
+        okButton.setBounds(95, 25, 70, 25);
+        okButton.addActionListener(e -> {
+            if (!checkBox.isSelected()) {
+                // если регистрация не выбрана посылаем запрос на проверку логина и пароля
+                objController.sendMessage("/auth " + loginField.getText() + " " + passField.getText());
+                dispose();  // закрываем оконо
+            } else {
+                // Регистрация нового пользователя.... и сразу вход в чат.
+                objController.sendMessage("/reguser " + nickNameField.getText() + " " + loginField.getText() + " " + passField.getText());
+                dispose();  // закрываем оконо
+            }
+        });
+
         // чек бокс для регистарции
         checkBox = new JCheckBox("Регистарция.");
         checkBox.setBounds(90, 70, 120, 15);
-        checkBox.addActionListener(event->{
-            if(checkBox.isSelected ()) {
+        checkBox.addActionListener(event -> {
+            if (checkBox.isSelected()) {
                 labelNickName.setVisible(true);
                 nickNameField.setVisible(true);
-            }
-            else {
+            } else {
                 labelNickName.setVisible(false);
                 nickNameField.setVisible(false);
             }
@@ -60,15 +62,15 @@ public class LoginFrame extends JFrame {
 
         //метка логина
         labelLogin = new JLabel("login");
-        labelLogin.setBounds(10,5,70,15);
+        labelLogin.setBounds(10, 5, 70, 15);
 
         //метка пароля
         labelPass = new JLabel("pass");
-        labelPass.setBounds(10,50,70,15);
+        labelPass.setBounds(10, 50, 70, 15);
 
         //метка ник-нейма
         labelNickName = new JLabel("nick-Name");
-        labelNickName.setBounds(10,95,70,15);
+        labelNickName.setBounds(10, 95, 70, 15);
         labelNickName.setVisible(false);
 
         //Добавляем все элементы управления панелью регистарции
@@ -81,7 +83,7 @@ public class LoginFrame extends JFrame {
         add(checkBox);
         add(nickNameField);
         setLayout(null);
-        setLocationRelativeTo (null);
+        setLocationRelativeTo(null);
         this.setVisible(true);
     }
 

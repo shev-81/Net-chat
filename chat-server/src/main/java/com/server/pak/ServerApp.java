@@ -8,15 +8,16 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class ServerApp {
+
     private ArrayList<ClientHandler> clients;
     private Socket socket=null;
     private AuthService authService;
+
     public AuthService getAuthService() {
         return authService;
     }
     ServerApp(){
         clients = new ArrayList<>();                // инициализируем список
-//        authService = new AuthServiceClass();     // инициализируем список возможжных User/ov на сервере
         authService = new AuthServiceBD();          // инициализируем список возможжных User/ov на сервере
 
         try(ServerSocket serverSocket = new ServerSocket(8189)){
