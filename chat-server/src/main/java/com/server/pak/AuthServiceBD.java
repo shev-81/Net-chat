@@ -34,6 +34,20 @@ public class AuthServiceBD implements AuthService {
             stop();
         }
     }
+    public boolean registerNewUser(String nickName, String login, String pass){
+        int result=0;
+        start();
+        try {
+            // регистрируем нового пользователя в БД
+            result = stmt.executeUpdate("INSERT INTO users (NickName, login, pass) VALUES ('"+nickName+"','"+login+"','"+pass+"');");
+            // регистрируем нового пользователя в листе AuthServiceBD
+            listUser.add(new Users(nickName,login,pass));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        stop();
+        return result>0;
+    }
     public void loadUsers() throws SQLException {
         try (ResultSet rs = stmt.executeQuery("SELECT * FROM users;")) {
             while (rs.next()) {
@@ -68,7 +82,8 @@ public class AuthServiceBD implements AuthService {
     @Override
     public String getNickByLoginPass(String login, String pass) {
         for (AuthServiceBD.Users user : listUser) {
-            if (user.login.equals(login) && user.pass.equals(pass)) return user.name;
+            if (user.login.equals(login) && user.pass.equals(pass))
+                return user.name;
         }
         return null;
     }
