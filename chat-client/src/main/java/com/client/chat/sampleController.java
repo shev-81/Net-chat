@@ -13,14 +13,14 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javax.swing.*;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+
 import static javafx.scene.input.MouseButton.PRIMARY;
 
 public class sampleController implements Initializable {
@@ -31,6 +31,7 @@ public class sampleController implements Initializable {
     private DataOutputStream out;
     private String strFromServer;
     private String strFromClient;
+    private String myName;
     private static final int TIME_COUNT = 120000; // таймер в 2 минуты
     private ObservableList<String> listUserModel;
     private ArrayList<String> arrUsers;
@@ -48,12 +49,12 @@ public class sampleController implements Initializable {
         try {
             openConnection();
             autorizQuestion();
+            loadAllMsg();
             readMsg();
         } catch (SocketTimeoutException e) {
             System.out.println("Пользователь был отключен из за бездействия!");
             loginFrame.dispose();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -97,6 +98,12 @@ public class sampleController implements Initializable {
                     listUserModel = FXCollections.observableArrayList(arrUsers);
                     listFx.setItems(listUserModel);                         // Устанавливаем список зарегистрированных пользователей для своего клиента
                     socket.setSoTimeout(0);
+                    continue;
+                }
+                if (strFromServer.startsWith("/uname")) {
+                    String[] parts = strFromServer.split("\\s+");
+                    myName = parts[1];
+                    Platform.runLater(() -> Main.getpStage().setTitle("Net-chat:  " + myName));
                     break;
                 }
                 if (strFromServer.startsWith("/authno")) {
@@ -111,8 +118,7 @@ public class sampleController implements Initializable {
             System.out.println("Пользователь был отключен из за бездействия.");
             loginFrame.dispose();
             Platform.exit();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             Platform.exit();
         }
@@ -141,11 +147,38 @@ public class sampleController implements Initializable {
                         continue;
                     }
                     textArea.appendText(strFromServer + "\n");
+                    saveMsgToFile(strFromServer);
                 }
             } catch (Exception e) {
                 Platform.exit();
             }
         }).start();
+    }
+
+    @FXML
+    public void saveMsgToFile(String msg) {
+        if (!msg.contains(":")) return;
+        try (BufferedWriter in = new BufferedWriter(new FileWriter("chat-client/chathistory/"+myName + "_msg.txt", true))) {
+            in.write(msg);
+            in.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void loadAllMsg() {
+        String str;
+        File file = new File("chat-client/chathistory/" + myName + "_msg.txt");
+        if (!file.exists()) return;
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            while ((str = reader.readLine()) != null) {
+                textArea.appendText(str + "\n");
+            }
+            textArea.appendText(LocalDate.now().toString() + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -182,27 +215,27 @@ public class sampleController implements Initializable {
         if (mouseEvent.getButton() == PRIMARY) {
             new Thread(() -> {
                 String msg = JOptionPane.showInputDialog("Сообщение для: " + nameUser);
-                try{
-                if (!msg.trim().isEmpty()) {
-                    sendMessage("/w " + nameUser + " " + msg);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Нет сообщения");
-                }
-                }catch (NullPointerException e){
+                try {
+                    if (!msg.trim().isEmpty()) {
+                        sendMessage("/w " + nameUser + " " + msg);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Нет сообщения");
+                    }
+                } catch (NullPointerException e) {
                     JOptionPane.showMessageDialog(null, "Ошибка отправки сообщения");
                 }
             }).start();
-        }else{
+        } else {
             // если левый клик то даем окно с запросом смены ника пользователя
             new Thread(() -> {
                 String msg = JOptionPane.showInputDialog("Сменить свое имя на: ");
-                try{
-                if (!msg.trim().isEmpty()) {
-                    sendMessage("/changename " + msg);
-                }else {
-                    JOptionPane.showMessageDialog(null, "Введите имя.");
-                }
-                }catch (NullPointerException e){
+                try {
+                    if (!msg.trim().isEmpty()) {
+                        sendMessage("/changename " + msg);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Введите имя.");
+                    }
+                } catch (NullPointerException e) {
                     JOptionPane.showMessageDialog(null, "Ошибка смены имени");
                 }
             }).start();

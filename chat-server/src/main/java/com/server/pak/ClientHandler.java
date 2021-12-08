@@ -28,20 +28,11 @@ public class ClientHandler {
             this.in = new DataInputStream(socket.getInputStream());
             this.out = new DataOutputStream(socket.getOutputStream());
             this.name = "";
-            new Thread(() -> {
-                try {
-                    autentification();
-                    readMessages();
-                } catch (SocketException e) {
-                    e.toString();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    closeConnection();
-                }
-            }).start();
+            autentification();
+            readMessages();
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка при создании слушателя клиента... ");
+            System.out.println("Ошибка при создании слушателя клиента... ");
+            closeConnection();
         }
     }
 
@@ -81,6 +72,7 @@ public class ClientHandler {
                         serverApp.sendAll("/conected " + name);
                         serverApp.subscribe(this);
                         sendMessage("/authok " + serverApp.getClientsList());
+                        sendMessage("/uname " + name);
                         return;
                     } else {
                         sendMessage("/authno");
@@ -115,10 +107,11 @@ public class ClientHandler {
                 serverApp.sendAll(name + " отключился.");
                 serverApp.sendAll("/disconected " + name);
                 System.out.println("[Server]: " + name + " disconnected!");
-                return;
+                break;
             }
             serverApp.sendAll(name + ": " + str);
         }
+        closeConnection();
     }
 
     public void sendMessage(String string) {

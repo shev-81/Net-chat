@@ -20,54 +20,54 @@ public class AuthServiceBD implements AuthService {
             this.pass = pass;
         }
     }
+
     AuthServiceBD() {
         listUser = new ArrayList<>();
         try {
             start();
             loadUsers();
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            stop();
         }
     }
-    public boolean registerNewUser(String nickName, String login, String pass){
-        int result=0;
-        start();
+
+    public boolean registerNewUser(String nickName, String login, String pass) {
+        int result = 0;
         try {
             // регистрируем нового пользователя в БД
-            result = stmt.executeUpdate("INSERT INTO users (NickName, login, pass) VALUES ('"+nickName+"','"+login+"','"+pass+"');");
+            result = stmt.executeUpdate("INSERT INTO users (NickName, login, pass) VALUES ('" + nickName + "','" + login + "','" + pass + "');");
             // регистрируем нового пользователя в листе AuthServiceBD
-            listUser.add(new Users(nickName,login,pass));
+            listUser.add(new Users(nickName, login, pass));
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        stop();
-        return result>0;
+        return result > 0;
     }
+
     public void loadUsers() throws SQLException {
         try (ResultSet rs = stmt.executeQuery("SELECT * FROM users;")) {
             while (rs.next()) {
                 listUser.add(new Users(
-                    rs.getString(2),
-                    rs.getString(3),
-                    rs.getString(4)
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4)
                 ));
             }
         }
     }
+
     @Override
     public void start() {
         try {
-        connection = DriverManager.getConnection("jdbc:sqlite:userschat.db");
-        stmt=connection.createStatement();
+            connection = DriverManager.getConnection("jdbc:sqlite:userschat.db");
+            stmt = connection.createStatement();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Не возможно подключиться к БД.");
         }
     }
+
     @Override
     public void stop() {
         try {
@@ -79,6 +79,7 @@ public class AuthServiceBD implements AuthService {
             e.printStackTrace();
         }
     }
+
     @Override
     public String getNickByLoginPass(String login, String pass) {
         for (AuthServiceBD.Users user : listUser) {
