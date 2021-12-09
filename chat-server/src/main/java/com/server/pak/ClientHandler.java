@@ -52,6 +52,7 @@ public class ClientHandler {
                     serverApp.sendAll("/conected " + name);
                     serverApp.subscribe(this);
                     sendMessage("/authok " + serverApp.getClientsList());
+                    sendMessage("/uname " + name);
                     return;
                 }else{
                     System.out.println("регистрация нового пользователя не прошла");

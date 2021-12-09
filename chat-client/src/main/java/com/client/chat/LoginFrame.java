@@ -49,7 +49,7 @@ public class LoginFrame extends JFrame {
 
         // чек бокс для регистарции
         checkBox = new JCheckBox();
-        checkBox.setText("Регистарция.");
+        checkBox.setText("Регистрация.");
         checkBox.setBounds(90, 70, 120, 15);
         checkBox.addActionListener(event -> {
             if (checkBox.isSelected()) {
