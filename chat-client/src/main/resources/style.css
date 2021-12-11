@@ -1,6 +1,7 @@
 .text-area {
     -fx-background-image: url(background.png);
     -fx-font-size: 1.5em;
+
 }
 .text-area .scroll-pane .viewport{
     -fx-background-color: transparent;
@@ -11,5 +12,15 @@
 .framed.text-area .scroll-pane .viewport,
 .framed.text-area .content {
     -fx-background-color: null;
+}
+#paneUsers{
+    -fx-background-image: url("background.png");
+    -fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);
+}
+#listFx{
+    -fx-background-image: url("background.png");
+    -fx-background-color: transparent;
+    -fx-background-color: null;
+    -fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);
 }
 

@@ -5,38 +5,53 @@ package com.server.pak;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ServerApp {
+
     private ArrayList<ClientHandler> clients;
     private Socket socket=null;
     private AuthService authService;
+
     public AuthService getAuthService() {
         return authService;
     }
     ServerApp(){
-        clients = new ArrayList<>();            // инициализируем список
-        authService = new AuthServiceClass();   // инициализируем список возможжных User/ov на сервере
+        clients = new ArrayList<>();                // инициализируем список
+        authService = new AuthServiceBD();          // инициализируем список возможжных User/ov на сервере
+        ExecutorService service = Executors.newCachedThreadPool();     //newFixedThreadPool(10);
         try(ServerSocket serverSocket = new ServerSocket(8189)){
             while(true){
                 System.out.println("Server wait connected User.");
                 socket = serverSocket.accept();
                 System.out.println("User connected.");
-                new ClientHandler(this, socket);
+                service.execute(()-> {
+                    try {
+                        new ClientHandler(this, socket);
+                    } catch (SocketException e) {
+                        e.toString();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
             }
         }catch (IOException e){
             System.out.println("Ошибка на сервере.");
+        }finally {
+            authService.stop();
+            service.shutdown();
         }
     }
-
     public String getClientsList() {
-        String clientsList = "";
+        StringBuilder clientsList = new StringBuilder();
         for(ClientHandler client: clients){
-            clientsList = clientsList+client.getName()+" ";
+            clientsList.append(client.getName()+" ");
         }
-        return clientsList;
+        return clientsList.toString();
     }
-
     public ClientHandler getClient(String name) {
         for(ClientHandler client: clients){
             if(client.getName().equals(name)) return client;
@@ -58,7 +73,8 @@ public class ServerApp {
     }
     public synchronized void subscribe(ClientHandler o) {
         clients.add(o);
-    }public synchronized void unSubscribe(ClientHandler o) {
+    }
+    public synchronized void unSubscribe(ClientHandler o) {
         clients.remove(o);
     }
 }
