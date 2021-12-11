@@ -1,6 +1,6 @@
 package com.client.chat;
 /**
- * Домашнее задание Шевеленко Андрея к 8 лекции Java 2
+ * Домашнее задание Шевеленко Андрея к 2 лекции Java 3
  */
 
 import javafx.application.Platform;
