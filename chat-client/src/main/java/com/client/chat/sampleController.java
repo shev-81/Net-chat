@@ -1,6 +1,6 @@
 package com.client.chat;
 /**
- * Домашнее задание Шевеленко Андрея к 2 лекции Java 3
+ * Домашнее задание Шевеленко Андрея к 3 лекции Java 3
  */
 
 import javafx.application.Platform;
@@ -169,11 +169,15 @@ public class sampleController implements Initializable {
     @FXML
     public void loadAllMsg() {
         String str;
+        ArrayList<String> loadMsg = new ArrayList<>();
         File file = new File("chat-client/chathistory/" + myName + "_msg.txt");
         if (!file.exists()) return;
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             while ((str = reader.readLine()) != null) {
-                textArea.appendText(str + "\n");
+                loadMsg.add(str);
+            }
+            for (int i = loadMsg.size()-10; i<loadMsg.size(); i++){
+                textArea.appendText(loadMsg.get(i) + "\n");
             }
             textArea.appendText(LocalDate.now().toString() + "\n");
         } catch (IOException e) {

@@ -1,6 +1,6 @@
 package com.server.pak;
 /**
- * Домашнее задание Шевеленко Андрея к 2 лекции Java 3
+ * Домашнее задание Шевеленко Андрея к 3 лекции Java 3
  */
 import java.io.IOException;
 import java.net.ServerSocket;
