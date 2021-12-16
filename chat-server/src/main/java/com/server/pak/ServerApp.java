@@ -2,6 +2,9 @@ package com.server.pak;
 /**
  * Домашнее задание Шевеленко Андрея к 3 лекции Java 3
  */
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -11,7 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ServerApp {
-
+    private static final Logger LOGGER = LogManager.getLogger(Main.class); // Trace < Debug < Info < Warn < Error < Fatal
     private ArrayList<ClientHandler> clients;
     private Socket socket=null;
     private AuthService authService;
@@ -25,22 +28,25 @@ public class ServerApp {
         ExecutorService service = Executors.newCachedThreadPool();     //newFixedThreadPool(10);
         try(ServerSocket serverSocket = new ServerSocket(8189)){
             while(true){
-                System.out.println("Server wait connected User.");
+                LOGGER.info("Server wait connected User.");
                 socket = serverSocket.accept();
-                System.out.println("User connected.");
+                LOGGER.info("User connected.");
                 service.execute(()-> {
                     try {
                         new ClientHandler(this, socket);
                     } catch (SocketException e) {
+                        LOGGER.throwing(Level.WARN,e);
                         e.toString();
                     } catch (IOException e) {
+                        LOGGER.throwing(Level.FATAL,e);
                         e.printStackTrace();
                     }
                 });
             }
         }catch (IOException e){
-            System.out.println("Ошибка на сервере.");
+            LOGGER.throwing(Level.FATAL,e);
         }finally {
+            LOGGER.info("Server is offline.");
             authService.stop();
             service.shutdown();
         }

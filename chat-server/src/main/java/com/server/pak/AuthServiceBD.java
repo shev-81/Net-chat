@@ -1,10 +1,15 @@
 package com.server.pak;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AuthServiceBD implements AuthService {
+    private static final Logger LOGGER = LogManager.getLogger(AuthServiceBD.class);
     private List<Users> listUser;
     private static Connection connection;
     private static Statement stmt;
@@ -26,10 +31,11 @@ public class AuthServiceBD implements AuthService {
         try {
             start();
             loadUsers();
+            LOGGER.info("Загрузили пользователей из БД AuthServiceBD");
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.throwing(Level.ERROR, e);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.throwing(Level.FATAL, e);
         }
     }
 
@@ -41,7 +47,7 @@ public class AuthServiceBD implements AuthService {
             // регистрируем нового пользователя в листе AuthServiceBD
             listUser.add(new Users(nickName, login, pass));
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.throwing(Level.ERROR, e);
         }
         return result > 0;
     }
@@ -64,6 +70,7 @@ public class AuthServiceBD implements AuthService {
             connection = DriverManager.getConnection("jdbc:sqlite:userschat.db");
             stmt = connection.createStatement();
         } catch (SQLException e) {
+            LOGGER.throwing(Level.ERROR, e);
             throw new RuntimeException("Не возможно подключиться к БД.");
         }
     }
@@ -76,7 +83,7 @@ public class AuthServiceBD implements AuthService {
             if (connection != null)
                 connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.throwing(Level.ERROR, e);
         }
     }
 
