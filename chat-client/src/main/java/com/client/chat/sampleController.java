@@ -158,7 +158,7 @@ public class sampleController implements Initializable {
     @FXML
     public void saveMsgToFile(String msg) {
         if (!msg.contains(":")) return;
-        try (BufferedWriter in = new BufferedWriter(new FileWriter("chat-client/chathistory/"+myName + "_msg.txt", true))) {
+        try (BufferedWriter in = new BufferedWriter(new FileWriter("chat-client/chathistory/" + myName + "_msg.txt", true))) {
             in.write(msg);
             in.newLine();
         } catch (IOException e) {
@@ -176,7 +176,7 @@ public class sampleController implements Initializable {
             while ((str = reader.readLine()) != null) {
                 loadMsg.add(str);
             }
-            for (int i = loadMsg.size()-10; i<loadMsg.size(); i++){
+            for (int i = loadMsg.size() - 10; i < loadMsg.size(); i++) {
                 textArea.appendText(loadMsg.get(i) + "\n");
             }
             textArea.appendText(LocalDate.now().toString() + "\n");
@@ -218,29 +218,37 @@ public class sampleController implements Initializable {
         String nameUser = listFx.getSelectionModel().getSelectedItem();
         if (mouseEvent.getButton() == PRIMARY) {
             new Thread(() -> {
-                String msg = JOptionPane.showInputDialog("Сообщение для: " + nameUser);
+                String msg = JOptionPane.showInputDialog("Message for: " + nameUser);
                 try {
                     if (!msg.trim().isEmpty()) {
                         sendMessage("/w " + nameUser + " " + msg);
                     } else {
-                        JOptionPane.showMessageDialog(null, "Нет сообщения");
+                        JOptionPane.showMessageDialog(null, "Nothing send");
                     }
                 } catch (NullPointerException e) {
-                    JOptionPane.showMessageDialog(null, "Ошибка отправки сообщения");
+                    JOptionPane.showMessageDialog(null, "Error send message");
                 }
             }).start();
         } else {
             // если левый клик то даем окно с запросом смены ника пользователя
             new Thread(() -> {
-                String msg = JOptionPane.showInputDialog("Сменить свое имя на: ");
+                String msg = JOptionPane.showInputDialog("Change name: ");
                 try {
-                    if (!msg.trim().isEmpty()) {
+                    if (!msg.trim().isEmpty()) {  // если сообщение не пустое и не свой ник то проверяем его  с никами в сети
+                        for (String nameUserInList : arrUsers) {
+                            if (msg.trim().equals(nameUserInList.trim())) {
+                                JOptionPane.showMessageDialog(null, "Error change name");
+                                return;
+                            }
+                        }
+                        arrUsers.set(arrUsers.indexOf(myName), msg);
+                        myName = msg;
                         sendMessage("/changename " + msg);
                     } else {
-                        JOptionPane.showMessageDialog(null, "Введите имя.");
+                        JOptionPane.showMessageDialog(null, "Enter name.");
                     }
                 } catch (NullPointerException e) {
-                    JOptionPane.showMessageDialog(null, "Ошибка смены имени");
+                    JOptionPane.showMessageDialog(null, "Error change name");
                 }
             }).start();
         }
