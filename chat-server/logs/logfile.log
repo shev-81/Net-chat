@@ -204,3 +204,58 @@ INFO  2021-12-22 10:37:48 [pool-2-thread-2] com.server.pak.ClientHandler (Client
 INFO  2021-12-22 10:37:48 [pool-2-thread-2] com.server.pak.ClientHandler (ClientHandler.java:115) - [Server]: Anna disconnected!
 INFO  2021-12-22 10:38:08 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:47) - [Server]: Unknow User disconnected!
 INFO  2021-12-22 10:38:08 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:38) - Ошибка при создании слушателя клиента... 
+INFO  2021-12-23 10:31:07 [main] com.server.pak.AuthServiceBD (AuthServiceBD.java:38) - Загрузили пользователей из БД AuthServiceBD
+INFO  2021-12-23 10:31:07 [main] com.server.pak.ServerApp (ServerApp.java:31) - Server wait connected User.
+INFO  2021-12-23 10:31:13 [main] com.server.pak.ServerApp (ServerApp.java:33) - User connected.
+INFO  2021-12-23 10:31:13 [main] com.server.pak.ServerApp (ServerApp.java:31) - Server wait connected User.
+INFO  2021-12-23 10:31:27 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:82) - [Server]: Aaa авторизовался.
+INFO  2021-12-23 10:31:27 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:97) - от Aaa: /end
+INFO  2021-12-23 10:31:27 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:117) - [Server]: Aaa disconnected!
+INFO  2021-12-23 10:35:25 [main] com.server.pak.ServerApp (ServerApp.java:33) - User connected.
+INFO  2021-12-23 10:35:25 [main] com.server.pak.ServerApp (ServerApp.java:31) - Server wait connected User.
+INFO  2021-12-23 10:35:36 [pool-2-thread-2] com.server.pak.ClientHandler (ClientHandler.java:82) - [Server]: Ulya авторизовался.
+INFO  2021-12-23 10:35:36 [pool-2-thread-2] com.server.pak.ClientHandler (ClientHandler.java:97) - от Ulya: /end
+INFO  2021-12-23 10:35:36 [pool-2-thread-2] com.server.pak.ClientHandler (ClientHandler.java:117) - [Server]: Ulya disconnected!
+INFO  2021-12-23 10:36:03 [main] com.server.pak.ServerApp (ServerApp.java:33) - User connected.
+INFO  2021-12-23 10:36:03 [main] com.server.pak.ServerApp (ServerApp.java:31) - Server wait connected User.
+INFO  2021-12-23 10:36:08 [pool-2-thread-2] com.server.pak.ClientHandler (ClientHandler.java:82) - [Server]: Anna авторизовался.
+INFO  2021-12-23 10:36:13 [pool-2-thread-2] com.server.pak.ClientHandler (ClientHandler.java:97) - от Anna: /end
+INFO  2021-12-23 10:36:13 [pool-2-thread-2] com.server.pak.ClientHandler (ClientHandler.java:117) - [Server]: Anna disconnected!
+INFO  2021-12-23 10:52:27 [main] com.server.pak.AuthServiceBD (AuthServiceBD.java:38) - Загрузили пользователей из БД AuthServiceBD
+INFO  2021-12-23 10:52:27 [main] com.server.pak.ServerApp (ServerApp.java:31) - Server wait connected User.
+INFO  2021-12-23 10:52:33 [main] com.server.pak.ServerApp (ServerApp.java:33) - User connected.
+INFO  2021-12-23 10:52:33 [main] com.server.pak.ServerApp (ServerApp.java:31) - Server wait connected User.
+INFO  2021-12-23 10:52:37 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:82) - [Server]: Aaa авторизовался.
+INFO  2021-12-23 10:52:57 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:97) - от Aaa: /changename Sss
+INFO  2021-12-23 10:54:43 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:39) - Ошибка при создании слушателя клиента... 
+INFO  2021-12-23 10:59:00 [main] com.server.pak.AuthServiceBD (AuthServiceBD.java:38) - Загрузили пользователей из БД AuthServiceBD
+INFO  2021-12-23 10:59:00 [main] com.server.pak.ServerApp (ServerApp.java:31) - Server wait connected User.
+INFO  2021-12-23 10:59:06 [main] com.server.pak.ServerApp (ServerApp.java:33) - User connected.
+INFO  2021-12-23 10:59:06 [main] com.server.pak.ServerApp (ServerApp.java:31) - Server wait connected User.
+INFO  2021-12-23 10:59:10 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:82) - [Server]: Sss авторизовался.
+INFO  2021-12-23 10:59:19 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:97) - от Sss: /changename Aaa
+INFO  2021-12-23 10:59:33 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:97) - от Aaa: /changename Sss
+INFO  2021-12-23 10:59:43 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:97) - от Sss: /changename Aaa
+INFO  2021-12-23 11:01:16 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:97) - от Aaa: /changename Sss
+INFO  2021-12-23 11:01:32 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:97) - от Sss: /changename Aaa
+INFO  2021-12-23 11:02:35 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:97) - от Aaa: /end
+INFO  2021-12-23 11:02:35 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:117) - [Server]: Aaa disconnected!
+INFO  2021-12-23 11:02:46 [main] com.server.pak.ServerApp (ServerApp.java:33) - User connected.
+INFO  2021-12-23 11:02:46 [main] com.server.pak.ServerApp (ServerApp.java:31) - Server wait connected User.
+INFO  2021-12-23 11:02:59 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:82) - [Server]: Sss авторизовался.
+INFO  2021-12-23 11:03:53 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:97) - от Sss: /end
+INFO  2021-12-23 11:03:53 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:117) - [Server]: Sss disconnected!
+INFO  2021-12-23 11:04:04 [main] com.server.pak.ServerApp (ServerApp.java:33) - User connected.
+INFO  2021-12-23 11:04:04 [main] com.server.pak.ServerApp (ServerApp.java:31) - Server wait connected User.
+INFO  2021-12-23 11:04:08 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:82) - [Server]: Sss авторизовался.
+INFO  2021-12-23 11:04:13 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:97) - от Sss: /end
+INFO  2021-12-23 11:04:13 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:117) - [Server]: Sss disconnected!
+INFO  2021-12-23 11:04:40 [main] com.server.pak.AuthServiceBD (AuthServiceBD.java:38) - Загрузили пользователей из БД AuthServiceBD
+INFO  2021-12-23 11:04:40 [main] com.server.pak.ServerApp (ServerApp.java:31) - Server wait connected User.
+INFO  2021-12-23 11:04:54 [main] com.server.pak.ServerApp (ServerApp.java:33) - User connected.
+INFO  2021-12-23 11:04:54 [main] com.server.pak.ServerApp (ServerApp.java:31) - Server wait connected User.
+INFO  2021-12-23 11:04:57 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:82) - [Server]: Aaa авторизовался.
+INFO  2021-12-23 11:05:15 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:97) - от Aaa: /changename Sssss
+INFO  2021-12-23 11:05:30 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:97) - от Sssss: /changename Aaa
+INFO  2021-12-23 11:08:51 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:97) - от Aaa: /end
+INFO  2021-12-23 11:08:51 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:117) - [Server]: Aaa disconnected!

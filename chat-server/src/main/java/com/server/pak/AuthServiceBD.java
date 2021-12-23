@@ -14,6 +14,10 @@ public class AuthServiceBD implements AuthService {
     private static Connection connection;
     private static Statement stmt;
 
+    public static Statement getStmt() {
+        return stmt;
+    }
+
     private class Users {
         private String name;
         private String login;
@@ -48,6 +52,16 @@ public class AuthServiceBD implements AuthService {
             listUser.add(new Users(nickName, login, pass));
         } catch (SQLException e) {
             LOGGER.throwing(Level.ERROR, e);
+        }
+        return result > 0;
+    }
+
+    public boolean updateNickName(String newName, String oldName){
+        int result = 0;
+        try{
+            result = stmt.executeUpdate( "UPDATE users SET NickName = '"+newName+"' WHERE NickName = '"+oldName+"';");
+        }catch (SQLException e){
+            LOGGER.error("Ошибка в смене имени пользователя");
         }
         return result > 0;
     }

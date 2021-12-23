@@ -168,6 +168,7 @@ public class sampleController implements Initializable {
 
     @FXML
     public void loadAllMsg() {
+        int i;
         String str;
         ArrayList<String> loadMsg = new ArrayList<>();
         File file = new File("chat-client/chathistory/" + myName + "_msg.txt");
@@ -176,7 +177,9 @@ public class sampleController implements Initializable {
             while ((str = reader.readLine()) != null) {
                 loadMsg.add(str);
             }
-            for (int i = loadMsg.size() - 10; i < loadMsg.size(); i++) {
+            i = loadMsg.size() - 10;
+            i = (i <= 0) ?  0 : loadMsg.size() - 10;
+            for ( ; i < loadMsg.size(); i++) {
                 textArea.appendText(loadMsg.get(i) + "\n");
             }
             textArea.appendText(LocalDate.now().toString() + "\n");

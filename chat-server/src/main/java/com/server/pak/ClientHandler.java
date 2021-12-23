@@ -11,6 +11,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
+import java.sql.SQLException;
 
 public class ClientHandler {
     private static final Logger LOGGER = LogManager.getLogger(ClientHandler.class);
@@ -19,7 +20,7 @@ public class ClientHandler {
     private DataOutputStream out;
     private String name;
     private String nickName;
-    ServerApp serverApp;
+    private ServerApp serverApp;
 
     public String getName() {
         return name;
@@ -34,7 +35,7 @@ public class ClientHandler {
             this.name = "";
             autentification();
             readMessages();
-        } catch (IOException e) {
+        } catch (IOException | SQLException e) {
             LOGGER.info("Ошибка при создании слушателя клиента... ");
             closeConnection();
         }
@@ -90,7 +91,7 @@ public class ClientHandler {
         }
     }
 
-    public void readMessages() throws IOException {
+    public void readMessages() throws IOException, SQLException {
         while (true) {
             String str = in.readUTF();
             LOGGER.info("от " + name + ": " + str);
@@ -104,6 +105,7 @@ public class ClientHandler {
                 serverApp.sendAll(name + " сменил свое имя на " + parts[1]);
                 serverApp.sendAll("/disconected " + name);
                 serverApp.sendAll("/conected " + parts[1]);
+                serverApp.getAuthService().updateNickName(parts[1], name);
                 name=parts[1];
                 continue;
             }
