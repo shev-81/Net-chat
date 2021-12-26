@@ -1,4 +1,4 @@
-package com.client.chat;
+package com.client.pak;
 /**
  * Домашнее задание Шевеленко Андрея к 4 лекции Java 3
  */

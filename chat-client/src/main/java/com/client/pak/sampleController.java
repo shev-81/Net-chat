@@ -1,4 +1,4 @@
-package com.client.chat;
+package com.client.pak;
 /**
  * Домашнее задание Шевеленко Андрея к 4 лекции Java 3
  */
@@ -15,6 +15,7 @@ import javafx.scene.input.MouseEvent;
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.time.LocalDate;
@@ -54,8 +55,14 @@ public class sampleController implements Initializable {
         } catch (SocketTimeoutException e) {
             System.out.println("Пользователь был отключен из за бездействия!");
             loginFrame.dispose();
+        } catch (SocketException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error");
+            Platform.exit();
         } catch (IOException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error");
+            Platform.exit();
         }
     }
 
@@ -178,8 +185,8 @@ public class sampleController implements Initializable {
                 loadMsg.add(str);
             }
             i = loadMsg.size() - 10;
-            i = (i <= 0) ?  0 : loadMsg.size() - 10;
-            for ( ; i < loadMsg.size(); i++) {
+            i = (i <= 0) ? 0 : loadMsg.size() - 10;
+            for (; i < loadMsg.size(); i++) {
                 textArea.appendText(loadMsg.get(i) + "\n");
             }
             textArea.appendText(LocalDate.now().toString() + "\n");
@@ -237,7 +244,7 @@ public class sampleController implements Initializable {
             new Thread(() -> {
                 String msg = JOptionPane.showInputDialog("Change name: ");
                 try {
-                    if (!msg.trim().isEmpty()) {  // если сообщение не пустое и не свой ник то проверяем его  с никами в сети
+                    if (!msg.trim().isEmpty()) {  // если сообщение не пустое и не свой ник то проверяем его с никами в сети
                         for (String nameUserInList : arrUsers) {
                             if (msg.trim().equals(nameUserInList.trim())) {
                                 JOptionPane.showMessageDialog(null, "Error change name");

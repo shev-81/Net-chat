@@ -259,3 +259,20 @@ INFO  2021-12-23 11:05:15 [pool-2-thread-1] com.server.pak.ClientHandler (Client
 INFO  2021-12-23 11:05:30 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:97) - от Sssss: /changename Aaa
 INFO  2021-12-23 11:08:51 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:97) - от Aaa: /end
 INFO  2021-12-23 11:08:51 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:117) - [Server]: Aaa disconnected!
+INFO  2021-12-26 14:22:51 [main] com.server.pak.AuthServiceBD (AuthServiceBD.java:38) - Загрузили пользователей из БД AuthServiceBD
+INFO  2021-12-26 14:22:51 [main] com.server.pak.ServerApp (ServerApp.java:31) - Server wait connected User.
+INFO  2021-12-26 14:22:57 [main] com.server.pak.ServerApp (ServerApp.java:33) - User connected.
+INFO  2021-12-26 14:22:57 [main] com.server.pak.ServerApp (ServerApp.java:31) - Server wait connected User.
+INFO  2021-12-26 14:23:03 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:82) - [Server]: Anna авторизовался.
+INFO  2021-12-26 14:23:07 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:97) - от Anna: fgsfg
+INFO  2021-12-26 14:23:21 [main] com.server.pak.ServerApp (ServerApp.java:33) - User connected.
+INFO  2021-12-26 14:23:21 [main] com.server.pak.ServerApp (ServerApp.java:31) - Server wait connected User.
+INFO  2021-12-26 14:23:28 [pool-2-thread-2] com.server.pak.ClientHandler (ClientHandler.java:82) - [Server]: Shev авторизовался.
+INFO  2021-12-26 14:23:38 [pool-2-thread-2] com.server.pak.ClientHandler (ClientHandler.java:97) - от Shev: /changename asdf
+INFO  2021-12-26 14:23:44 [pool-2-thread-2] com.server.pak.ClientHandler (ClientHandler.java:97) - от asdf: /changename Shev
+INFO  2021-12-26 14:23:50 [pool-2-thread-2] com.server.pak.ClientHandler (ClientHandler.java:97) - от Shev: /w Anna hi
+INFO  2021-12-26 14:23:59 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:97) - от Anna: /w Shev hihi
+INFO  2021-12-26 14:24:17 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:97) - от Anna: /end
+INFO  2021-12-26 14:24:17 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:117) - [Server]: Anna disconnected!
+INFO  2021-12-26 14:24:22 [pool-2-thread-2] com.server.pak.ClientHandler (ClientHandler.java:97) - от Shev: /end
+INFO  2021-12-26 14:24:22 [pool-2-thread-2] com.server.pak.ClientHandler (ClientHandler.java:117) - [Server]: Shev disconnected!

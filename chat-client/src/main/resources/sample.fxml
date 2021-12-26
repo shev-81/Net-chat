@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="center" xmlns="http://javafx.com/javafx/8.0.281" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.client.chat.sampleController">
+<VBox alignment="center" xmlns="http://javafx.com/javafx/8.0.281" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.client.pak.sampleController">
      <HBox VBox.vgrow="ALWAYS">
       <TextArea id="textAreaID1" fx:id="textArea" editable="false" prefWidth="300.0" styleClass="text-area" stylesheets="@style.css" wrapText="true"  />
       <ListView fx:id="listFx" prefWidth="100.0" prefHeight="475" stylesheets="@style.css" onMouseClicked="#moseClickOnListItem" HBox.hgrow="ALWAYS" />

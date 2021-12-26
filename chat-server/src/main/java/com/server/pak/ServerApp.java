@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ServerApp {
-    private static final Logger LOGGER = LogManager.getLogger(Main.class); // Trace < Debug < Info < Warn < Error < Fatal
+    private static final Logger LOGGER = LogManager.getLogger(ServerApp.class); // Trace < Debug < Info < Warn < Error < Fatal
     private ArrayList<ClientHandler> clients;
     private Socket socket=null;
     private AuthService authService;
