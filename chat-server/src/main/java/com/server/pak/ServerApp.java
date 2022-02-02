@@ -18,7 +18,6 @@ public class ServerApp {
     private ArrayList<ClientHandler> clients;
     private Socket socket=null;
     private AuthService authService;
-
     public AuthService getAuthService() {
         return authService;
     }

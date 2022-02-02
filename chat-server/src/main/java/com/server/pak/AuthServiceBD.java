@@ -13,7 +13,6 @@ public class AuthServiceBD implements AuthService {
     private List<Users> listUser;
     private static Connection connection;
     private static Statement stmt;
-
     public static Statement getStmt() {
         return stmt;
     }
