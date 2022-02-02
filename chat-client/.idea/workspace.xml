@@ -5,9 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e7c3c274-de9e-4519-85bd-868bf7777aa2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/client/chat/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/client/chat/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/client/chat/sampleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/client/chat/sampleController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../chat-server/src/main/java/com/server/pak/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../chat-server/src/main/java/com/server/pak/ClientHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/sample.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/sample.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../chat-server/logs/logfile.log" beforeDir="false" afterPath="$PROJECT_DIR$/../chat-server/logs/logfile.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../chat-server/src/main/java/com/server/pak/ServerApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/../chat-server/src/main/java/com/server/pak/ServerApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/unnamed/unnamed.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../out/artifacts/unnamed/unnamed.jar" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

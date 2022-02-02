@@ -1,4 +1,4 @@
-package com.client.chat;
+package com.client.pak;
 
 import javax.swing.*;
 
@@ -49,7 +49,7 @@ public class LoginFrame extends JFrame {
 
         // чек бокс для регистарции
         checkBox = new JCheckBox();
-        checkBox.setText("Регистрация.");
+        checkBox.setText("registration");
         checkBox.setBounds(90, 70, 120, 15);
         checkBox.addActionListener(event -> {
             if (checkBox.isSelected()) {

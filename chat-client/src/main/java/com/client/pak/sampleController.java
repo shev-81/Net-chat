@@ -1,6 +1,6 @@
-package com.client.chat;
+package com.client.pak;
 /**
- * Домашнее задание Шевеленко Андрея к 8 лекции Java 2
+ * Домашнее задание Шевеленко Андрея к 4 лекции Java 3
  */
 
 import javafx.application.Platform;
@@ -15,6 +15,7 @@ import javafx.scene.input.MouseEvent;
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.time.LocalDate;
@@ -54,8 +55,14 @@ public class sampleController implements Initializable {
         } catch (SocketTimeoutException e) {
             System.out.println("Пользователь был отключен из за бездействия!");
             loginFrame.dispose();
+        } catch (SocketException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error");
+            Platform.exit();
         } catch (IOException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error");
+            Platform.exit();
         }
     }
 
@@ -158,7 +165,7 @@ public class sampleController implements Initializable {
     @FXML
     public void saveMsgToFile(String msg) {
         if (!msg.contains(":")) return;
-        try (BufferedWriter in = new BufferedWriter(new FileWriter("chat-client/chathistory/"+myName + "_msg.txt", true))) {
+        try (BufferedWriter in = new BufferedWriter(new FileWriter("chat-client/chathistory/" + myName + "_msg.txt", true))) {
             in.write(msg);
             in.newLine();
         } catch (IOException e) {
@@ -168,12 +175,19 @@ public class sampleController implements Initializable {
 
     @FXML
     public void loadAllMsg() {
+        int i;
         String str;
+        ArrayList<String> loadMsg = new ArrayList<>();
         File file = new File("chat-client/chathistory/" + myName + "_msg.txt");
         if (!file.exists()) return;
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             while ((str = reader.readLine()) != null) {
-                textArea.appendText(str + "\n");
+                loadMsg.add(str);
+            }
+            i = loadMsg.size() - 10;
+            i = (i <= 0) ? 0 : loadMsg.size() - 10;
+            for (; i < loadMsg.size(); i++) {
+                textArea.appendText(loadMsg.get(i) + "\n");
             }
             textArea.appendText(LocalDate.now().toString() + "\n");
         } catch (IOException e) {
@@ -214,29 +228,37 @@ public class sampleController implements Initializable {
         String nameUser = listFx.getSelectionModel().getSelectedItem();
         if (mouseEvent.getButton() == PRIMARY) {
             new Thread(() -> {
-                String msg = JOptionPane.showInputDialog("Сообщение для: " + nameUser);
+                String msg = JOptionPane.showInputDialog("Message for: " + nameUser);
                 try {
                     if (!msg.trim().isEmpty()) {
                         sendMessage("/w " + nameUser + " " + msg);
                     } else {
-                        JOptionPane.showMessageDialog(null, "Нет сообщения");
+                        JOptionPane.showMessageDialog(null, "Nothing send");
                     }
                 } catch (NullPointerException e) {
-                    JOptionPane.showMessageDialog(null, "Ошибка отправки сообщения");
+                    JOptionPane.showMessageDialog(null, "Error send message");
                 }
             }).start();
         } else {
             // если левый клик то даем окно с запросом смены ника пользователя
             new Thread(() -> {
-                String msg = JOptionPane.showInputDialog("Сменить свое имя на: ");
+                String msg = JOptionPane.showInputDialog("Change name: ");
                 try {
-                    if (!msg.trim().isEmpty()) {
+                    if (!msg.trim().isEmpty()) {  // если сообщение не пустое и не свой ник то проверяем его с никами в сети
+                        for (String nameUserInList : arrUsers) {
+                            if (msg.trim().equals(nameUserInList.trim())) {
+                                JOptionPane.showMessageDialog(null, "Error change name");
+                                return;
+                            }
+                        }
+                        arrUsers.set(arrUsers.indexOf(myName), msg);
+                        myName = msg;
                         sendMessage("/changename " + msg);
                     } else {
-                        JOptionPane.showMessageDialog(null, "Введите имя.");
+                        JOptionPane.showMessageDialog(null, "Enter name.");
                     }
                 } catch (NullPointerException e) {
-                    JOptionPane.showMessageDialog(null, "Ошибка смены имени");
+                    JOptionPane.showMessageDialog(null, "Error change name");
                 }
             }).start();
         }

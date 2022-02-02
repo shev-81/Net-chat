@@ -1,21 +1,26 @@
 package com.server.pak;
 /**
- * Домашнее задание Шевеленко Андрея к 2 лекции Java 3
+ * Домашнее задание Шевеленко Андрея к 4 лекции Java 3
  */
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
+import java.sql.SQLException;
 
 public class ClientHandler {
+    private static final Logger LOGGER = LogManager.getLogger(ClientHandler.class);
     private Socket socket;
     private DataInputStream in;
     private DataOutputStream out;
     private String name;
     private String nickName;
-    ServerApp serverApp;
+    private ServerApp serverApp;
 
     public String getName() {
         return name;
@@ -30,8 +35,8 @@ public class ClientHandler {
             this.name = "";
             autentification();
             readMessages();
-        } catch (IOException e) {
-            System.out.println("Ошибка при создании слушателя клиента... ");
+        } catch (IOException | SQLException e) {
+            LOGGER.info("Ошибка при создании слушателя клиента... ");
             closeConnection();
         }
     }
@@ -40,7 +45,7 @@ public class ClientHandler {
         while (true) {
             String str = in.readUTF();
             if (str.toLowerCase().contains("/end")) {     // если пришло сообщение о закрытии закрываем подключение
-                System.out.println("[Server]: Unknow User disconnected!");
+                LOGGER.info("[Server]: Unknow User disconnected!");
                 throw new SocketException("потльзователь не подтвердил авторизацию.");
             }
             if (str.startsWith("/reguser")) {    // если пришел запрос о регистрации
@@ -55,7 +60,7 @@ public class ClientHandler {
                     sendMessage("/uname " + name);
                     return;
                 }else{
-                    System.out.println("регистрация нового пользователя не прошла");
+                    LOGGER.info("[Server]: регистрация нового пользователя не прошла");
                     sendMessage("/authno");
                 }
             }
@@ -74,6 +79,7 @@ public class ClientHandler {
                         serverApp.subscribe(this);
                         sendMessage("/authok " + serverApp.getClientsList());
                         sendMessage("/uname " + name);
+                        LOGGER.info("[Server]: " + name + " авторизовался.");
                         return;
                     } else {
                         sendMessage("/authno");
@@ -85,10 +91,10 @@ public class ClientHandler {
         }
     }
 
-    public void readMessages() throws IOException {
+    public void readMessages() throws IOException, SQLException {
         while (true) {
             String str = in.readUTF();
-            System.out.println("от " + name + ": " + str);
+            LOGGER.info("от " + name + ": " + str);
             if (str.toLowerCase().startsWith("/w")) {   //  "/w nickName msg....."
                 sendPrivateMessage(str);
                 continue;
@@ -99,6 +105,7 @@ public class ClientHandler {
                 serverApp.sendAll(name + " сменил свое имя на " + parts[1]);
                 serverApp.sendAll("/disconected " + name);
                 serverApp.sendAll("/conected " + parts[1]);
+                serverApp.getAuthService().updateNickName(parts[1], name);
                 name=parts[1];
                 continue;
             }
@@ -107,7 +114,7 @@ public class ClientHandler {
                 serverApp.unSubscribe(this);
                 serverApp.sendAll(name + " отключился.");
                 serverApp.sendAll("/disconected " + name);
-                System.out.println("[Server]: " + name + " disconnected!");
+                LOGGER.info("[Server]: " + name + " disconnected!");
                 break;
             }
             serverApp.sendAll(name + ": " + str);
@@ -119,8 +126,9 @@ public class ClientHandler {
         try {
             out.writeUTF(string);
         } catch (SocketException e) {
-            System.out.println("Пользователь разорвал соединение.");
+            LOGGER.info("Пользователь разорвал соединение.");
         } catch (IOException e) {
+            LOGGER.throwing(Level.WARN,e);
             e.printStackTrace();
         }
     }
@@ -145,6 +153,7 @@ public class ClientHandler {
             out.close();
             socket.close();
         } catch (IOException e) {
+            LOGGER.throwing(Level.WARN, e);
             e.printStackTrace();
         }
     }
