@@ -1,5 +1,5 @@
 .scroll-pane .viewport {
-    -fx-background-image: url('../images/background.jpg');
+    -fx-background-image: url(images/background.png);
 }
 
 .scroll-pane, .split-pane {

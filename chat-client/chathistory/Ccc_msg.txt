@@ -1,4 +1,2 @@
-Ccc: sdfsdfgsdfg
-Ccc: hello 
-Anna шепчет: привет 
+Anna шепчет: привет
 Anna шепчет: hi 

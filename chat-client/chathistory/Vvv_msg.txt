@@ -1,4 +1,2 @@
-Vvv: hi all
-Vvv: heloo 
-Shev шепчет: hi hi 
+Shev шепчет: hi hi
 Anna шепчет: привет 

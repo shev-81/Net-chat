@@ -1,7 +1,8 @@
-package com.client.pak;
+package com.client.pak.message;
 
-import com.client.pak.message.MessageType;
-import com.client.pak.message.MessgePane;
+import com.client.pak.Connection;
+import com.client.pak.Controller;
+import com.client.pak.Main;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.scene.layout.GridPane;
@@ -46,7 +47,7 @@ public class ReaderMessages {
                 GridPane.setHalignment(chatMessage, HPos.CENTER);
                 Platform.runLater(() -> {
                     controller.getMessgePanes().put(parts[1], new MessgePane(parts[1]));
-                    controller.chat.addRow(controller.getMessgePanes().get("Общий чат").getRowCount(), chatMessage);
+                    controller.getMessgePanes().get("Общий чат").addRow(controller.getMessgePanes().get("Общий чат").getRowCount(), chatMessage);
                     controller.scrollDown();
                 });
                 break;
@@ -55,7 +56,7 @@ public class ReaderMessages {
                 chatMessage = new Bubble(parts[1] + " покидает чат.");
                 GridPane.setHalignment(chatMessage, HPos.CENTER);
                 Platform.runLater(() -> {
-                    controller.chat.addRow(controller.getMessgePanes().get("Общий чат").getRowCount(), chatMessage);
+                    controller.getMessgePanes().get("Общий чат").addRow(controller.getMessgePanes().get("Общий чат").getRowCount(), chatMessage);
                     controller.scrollDown();
                 });
                 break;
@@ -65,7 +66,7 @@ public class ReaderMessages {
                 Platform.runLater(() -> {
                     controller.removeUsers(parts[2]);
                     controller.addUserInListFx(parts[1]);
-                    controller.chat.addRow(controller.getMessgePanes().get("Общий чат").getRowCount(), chatMessage);
+                    controller.getMessgePanes().get("Общий чат").addRow(controller.getMessgePanes().get("Общий чат").getRowCount(), chatMessage);
                     controller.scrollDown();
                 });
                 break;
@@ -89,7 +90,7 @@ public class ReaderMessages {
                 }
                 Bubble chatMessage = new Bubble(parts[0], sb.toString(), "");
                 GridPane.setHalignment(chatMessage, HPos.LEFT);
-                Platform.runLater(() -> controller.chat.addRow(controller.getMessgePanes().get("Общий чат").getRowCount(), chatMessage));
+                Platform.runLater(() -> controller.getMessgePanes().get("Общий чат").addRow(controller.getMessgePanes().get("Общий чат").getRowCount(), chatMessage));
                 Platform.runLater(() -> controller.scrollDown());
                 break;
         }

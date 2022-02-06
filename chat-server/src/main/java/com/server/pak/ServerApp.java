@@ -18,9 +18,7 @@ public class ServerApp {
     private ArrayList<ClientHandler> clients;
     private Socket socket=null;
     private AuthService authService;
-    public AuthService getAuthService() {
-        return authService;
-    }
+
     ServerApp(){
         clients = new ArrayList<>();                // инициализируем список
         authService = new AuthServiceBD();          // инициализируем список возможжных User/ov на сервере
@@ -56,6 +54,9 @@ public class ServerApp {
             clientsList.append(client.getName()+" ");
         }
         return clientsList.toString();
+    }
+    public AuthService getAuthService() {
+        return authService;
     }
     public ClientHandler getClient(String name) {
         for(ClientHandler client: clients){

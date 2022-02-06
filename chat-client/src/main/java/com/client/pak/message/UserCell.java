@@ -1,4 +1,4 @@
-package com.client.pak;
+package com.client.pak.message;
 
 import java.io.Serializable;
 

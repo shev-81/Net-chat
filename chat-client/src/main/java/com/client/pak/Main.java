@@ -1,7 +1,4 @@
 package com.client.pak;
-/**
- * Домашнее задание Шевеленко Андрея к 4 лекции Java 3
- */
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -11,7 +8,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
     private FXMLLoader loader;
-    private sampleController controller;
+    private Controller controller;
     public static Stage pStage;
 
     public void start(Stage primaryStage) throws Exception {
@@ -19,7 +16,7 @@ public class Main extends Application {
         loader = new FXMLLoader(getClass().getResource("/sample.fxml"));
         controller = loader.getController();
         Parent root = loader.load();
-        primaryStage.setScene(new Scene(root, 400, 500));
+        primaryStage.setScene(new Scene(root));
         primaryStage.setTitle("Net-chat:");
         primaryStage.show();
     }
@@ -29,9 +26,11 @@ public class Main extends Application {
     }
 
     public void stop() {
-        controller = loader.getController();
-        controller.sendMessage("/end");
-        controller.closeConnection();
+        try{
+            controller = loader.getController();
+            controller.getConnection().sendMessage("/end");
+            controller.getConnection().closeConnection();
+        }catch (NullPointerException e){}
     }
 
     public static void main(String[] args) {

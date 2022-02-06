@@ -1,32 +1,57 @@
-Shev: hi
-Anna: hellow
-Shev: hey
-Anna: hellow
-Shev: sdfdfdf
-Anna: dfddddddddddddddddddddddd
-Shev: ggggg
-Anna: dfsdfgsdf
-Shev: sdfsdfg
-Ulya: dsdfgsdf
-Anna: asdfasdf
-Shev: scvsvfsf
-Ulya шепчет: hello 
-Vvv: hi all
-Vvv шепчет: heloo 
-Shev: hi hi 
-Anna: hey
-Shev: hi
-Shev: hellow
-Anna: hi hi
-asdfsdf: fghdfgh 
-Shev: sss 
-Shev шепчет: sss 
-Shev: hi
-Anna: heloow
-Shev: hi 
-Anna шепчет: hihi 
-Shev: dddddddddddddddddddddd
-Anna: cdsfdfdf
-Shev: vvvvvvvvv
-Anna: sdsdfsdf
-Shev: sdfsdf
+
+Shev hi
+Anna hello
+Anna как дела?
+Shev все окей
+Shev а у тебя?
+Anna да вроде все окей
+Anna эхх
+Anna ну и окей
+Anna отключился.
+Shev всем привет
+Anna приветик
+Anna пойдем гулять
+Shev нет спасибо
+Anna шепчет: hello 
+Anna шепчет: how are u? 
+Shev /auth anna anna
+Shev hi
+Anna hello
+Anna отключился.
+ddddddddd присоединился.
+aaa сменил свое имя на Shev
+ddddddddd сменил свое имя на aaa
+ddddddddd сменил свое имя на Aaa
+Aaa hi all
+Anna привет ааа
+Shev как дела?
+Aaa отключился.
+Anna отключился.
+Shev hi
+anna hello
+anna отключился.
+Anna присоединился.
+Anna отключился.
+Shev how are u?
+Anna i am fine
+Anna отключился.
+Shev hi
+Shev sdsdf
+Shev asdasd
+Anna присоединился.
+Shev Привет Аня
+Anna Привет Андрей
+Shev привет Аня
+Ulya привет Мама и папа
+Ulya всем пока
+aaa сменил свое имя на Aaaa
+Aaaa сменил свое имя на Aaa
+Aaa ddfd
+Shev hi
+Shev Ура товарищи все работает
+Anna УРААААААААА
+Shev Здарова народ!!!
+Ulya Всем приветик
+Anna Ну и я присоединяюсь ))))
+Shev привет всем!
+Anna приветик shev!

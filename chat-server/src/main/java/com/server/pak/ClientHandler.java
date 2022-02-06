@@ -1,11 +1,9 @@
 package com.server.pak;
-/**
- * Домашнее задание Шевеленко Андрея к 4 лекции Java 3
- */
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -21,10 +19,6 @@ public class ClientHandler {
     private String name;
     private String nickName;
     private ServerApp serverApp;
-
-    public String getName() {
-        return name;
-    }
 
     public ClientHandler(ServerApp serverApp, Socket socket) throws IOException {
         try {
@@ -51,15 +45,14 @@ public class ClientHandler {
             if (str.startsWith("/reguser")) {    // если пришел запрос о регистрации
                 System.out.println(str);
                 String[] parts = str.split("\\s+");
-                if(serverApp.getAuthService().registerNewUser(parts[1],parts[2],parts[3])){
+                if (serverApp.getAuthService().registerNewUser(parts[1], parts[2], parts[3])) {
                     name = parts[1];
-                    serverApp.sendAll(name + " присоединился.");
                     serverApp.sendAll("/conected " + name);
                     serverApp.subscribe(this);
                     sendMessage("/authok " + serverApp.getClientsList());
                     sendMessage("/uname " + name);
                     return;
-                }else{
+                } else {
                     LOGGER.info("[Server]: регистрация нового пользователя не прошла");
                     sendMessage("/authno");
                 }
@@ -74,11 +67,10 @@ public class ClientHandler {
                 if (nickName != null) {
                     if (!serverApp.isNickBusy(nickName)) {
                         name = nickName;
-                        serverApp.sendAll(name + " присоединился.");
                         serverApp.sendAll("/conected " + name);
                         serverApp.subscribe(this);
-                        sendMessage("/authok " + serverApp.getClientsList());
                         sendMessage("/uname " + name);
+                        sendMessage("/authok " + serverApp.getClientsList());
                         LOGGER.info("[Server]: " + name + " авторизовался.");
                         return;
                     } else {
@@ -95,29 +87,32 @@ public class ClientHandler {
         while (true) {
             String str = in.readUTF();
             LOGGER.info("от " + name + ": " + str);
-            if (str.toLowerCase().startsWith("/w")) {   //  "/w nickName msg....."
+            if (str.toLowerCase().startsWith("/personal")) {      // personal кому от кого и само сообщение
                 sendPrivateMessage(str);
                 continue;
             }
-            if (str.toLowerCase().startsWith("/changename")) {   //  "/changeName msg.....  смена имени на новое"
-                System.out.println(str+" запрос на смену имени");
+            if (str.toLowerCase().startsWith("/changename")) {   // смена имени на новое
+                LOGGER.info("[Server]: "+ str + " запрос на смену имени");
                 String[] parts = str.split("\\s+");
-                serverApp.sendAll(name + " сменил свое имя на " + parts[1]);
-                serverApp.sendAll("/disconected " + name);
-                serverApp.sendAll("/conected " + parts[1]);
-                serverApp.getAuthService().updateNickName(parts[1], name);
-                name=parts[1];
+                boolean rezult = serverApp.getAuthService().updateNickName(parts[1], parts[2]);
+                if(rezult) {
+                    serverApp.sendAll("/changename " + parts[1] + " " + parts[2]);
+                    LOGGER.info("[Server]: "+ str + " запрос на смену имени УДОВЛЕТВОРЕН");
+                }else{
+                    LOGGER.warn("[Server]: "+ str + " запрос на смену имени НЕ УДОВЛЕТВОРЕН");
+                }
+                name = parts[1];
                 continue;
             }
 
             if (str.toLowerCase().startsWith("/end")) {     // если пришло сообщение о закрытии закрываем подключение
                 serverApp.unSubscribe(this);
-                serverApp.sendAll(name + " отключился.");
+                //serverApp.sendAll(name + " отключился.");
                 serverApp.sendAll("/disconected " + name);
                 LOGGER.info("[Server]: " + name + " disconnected!");
                 break;
             }
-            serverApp.sendAll(name + ": " + str);
+            serverApp.sendAll(name + " " + str);
         }
         closeConnection();
     }
@@ -128,22 +123,21 @@ public class ClientHandler {
         } catch (SocketException e) {
             LOGGER.info("Пользователь разорвал соединение.");
         } catch (IOException e) {
-            LOGGER.throwing(Level.WARN,e);
+            LOGGER.throwing(Level.WARN, e);
             e.printStackTrace();
         }
     }
 
-    public void sendPrivateMessage(String str) {
+    public void sendPrivateMessage(String str) {    // /personal кому от кого и само сообщение
         String[] parts = str.split("\\s+");
-        StringBuilder msg = new StringBuilder();    // создаем строку сообщения ен учитывая служебные команды
-        for (int i = 2; i < parts.length; i++) {          // собираем оставшуюся строку в сообщение
+        StringBuilder msg = new StringBuilder();    // создаем строку сообщения не учитывая служебные команды
+        for (int i = 3; i < parts.length; i++) {    // собираем оставшуюся строку в сообщение
             msg.append(parts[i]).append(" ");
         }
-        if (serverApp.isNickBusy(parts[1])) {         // если имя занято то клиент есть и посылаем ему сообщение
-            this.sendMessage(name + ": " + msg);  // дубль сообщения себе в чат
-            serverApp.getClient(parts[1]).sendMessage(name + " шепчет: " + msg);  // и в приват выбранному имени
+        if (serverApp.isNickBusy(parts[1])) {           // если имя занято то клиент есть и посылаем ему сообщение
+            serverApp.getClient(parts[1]).sendMessage("/personal " + parts[2] + " " + msg);
         } else {
-            sendMessage(parts[1] + " нет в сети.");
+            LOGGER.info("[Server]: " + parts[1] + " not in network");
         }
     }
 
@@ -156,5 +150,8 @@ public class ClientHandler {
             LOGGER.throwing(Level.WARN, e);
             e.printStackTrace();
         }
+    }
+    public String getName() {
+        return name;
     }
 }

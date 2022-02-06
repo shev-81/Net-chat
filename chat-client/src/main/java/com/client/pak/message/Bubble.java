@@ -1,4 +1,4 @@
-package com.client.pak;
+package com.client.pak.message;
 
 import javafx.scene.Group;
 import javafx.scene.control.Label;
