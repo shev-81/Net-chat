@@ -1,0 +1,53 @@
+.scroll-pane .viewport {
+    -fx-background-image: url('../images/background.jpg');
+}
+
+.scroll-pane, .split-pane {
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+}
+
+.list-view, .split-pane {
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+}
+
+.list-cell {
+-fx-background-radius: 10px;
+  -fx-background-color: #FFFFFF;
+}
+.list-cell:filled:selected:focused, .list-cell:filled:selected {
+   -fx-background-color: #4169E1;
+
+ }
+
+.list-cell:filled:hover {
+    -fx-background-color: #E0E0E0;
+    -fx-text-color: white;
+}
+
+.buttonIcon {
+    -fx-opacity: 0.3;
+}
+
+.buttonIcon:hover {
+    -fx-opacity: 0.6;
+}
+
+.button {
+    -fx-background-color: #4169E1;
+    -fx-background-radius: 0;
+    -fx-text-fill: white;
+}
+
+.button:hover {
+    -fx-opacity: 0.85;
+}
+
+.textField {
+    -fx-border-style: none none none solid;
+    -fx-border-width: 1;
+    -fx-border-color: #E0E0E0;
+    -fx-background-color:
+    -fx-control-inner-background;
+}

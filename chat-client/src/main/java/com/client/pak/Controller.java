@@ -6,12 +6,17 @@ package com.client.pak;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.HPos;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
@@ -25,6 +30,7 @@ import java.util.ResourceBundle;
 import static javafx.scene.input.MouseButton.PRIMARY;
 
 public class sampleController implements Initializable {
+    private Connection connection;
     private final String SERVER_ADDR = "localhost";  //192.168.1.205";
     private final int SERVER_PORT = 8189;
     private Socket socket;
@@ -44,6 +50,12 @@ public class sampleController implements Initializable {
     TextField textField;
     @FXML
     TextArea textArea;
+    @FXML
+    VBox chatPane;
+    @FXML
+    GridPane chat;
+    @FXML
+    GridPane authPane;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -67,12 +79,32 @@ public class sampleController implements Initializable {
     }
 
     @FXML
-    public void clikButton_1() {
+    public void SendButton() {
         if (!textField.getText().trim().isEmpty()) {
             strFromClient = textField.getText();
+            Bubble chatMessage = new Bubble(myName,strFromClient,"");  // todo тут добавляем облачко с сообщением
+            GridPane.setHalignment(chatMessage, HPos.RIGHT);
+            Platform.runLater(() -> chat.addRow(chat.getRowCount(),chatMessage));
             sendMessage(strFromClient);
             textField.clear();
             textField.requestFocus();
+        }
+    }
+
+    public void enterChat(ActionEvent event) throws IOException {
+        if (connection == null) {
+            connection = new ClientConnection(this);
+            new Thread(connection).start();
+        }
+        if (authLogin.getText().isEmpty() || authPassword.getText().isEmpty()) {
+            authMessage.setText("Enter login and password");
+            authMessage.setVisible(true);
+        } else {
+            Message message = new Message();
+            message.setMessageType(MessageType.AUTH);
+            message.setLogin(authLogin.getText());
+            message.setPassword(authPassword.getText());
+            connection.send(message);
         }
     }
 
@@ -137,23 +169,27 @@ public class sampleController implements Initializable {
             try {
                 while (true) {
                     strFromServer = in.readUTF();
+                    String[] parts = strFromServer.split("\\s+");
                     if (strFromServer.startsWith("/end")) {
                         closeConnection();
                         Platform.exit();
                     }
                     if (strFromServer.startsWith("/conected")) {             // при соединении нового пользователя обновляем список активных пользователей
-                        String[] parts = strFromServer.split("\\s+");
                         ObservableList<String> finalListUserModel = listUserModel;
                         Platform.runLater(() -> finalListUserModel.add(parts[1]));
                         continue;
                     }
                     if (strFromServer.startsWith("/disconected")) {          // при Отсоединении пользователя обновляем список активных пользователей
-                        String[] parts = strFromServer.split("\\s+");
                         ObservableList<String> finalListUserModel = listUserModel;
                         Platform.runLater(() -> finalListUserModel.remove(parts[1]));
                         continue;
                     }
-                    textArea.appendText(strFromServer + "\n");
+                    if(!parts[0].equals(myName)){
+                        textArea.appendText(strFromServer + "\n");
+                        Bubble chatMessage = new Bubble(parts[0], strFromServer,"");  // todo тут добавляем облачко с сообщением
+                        GridPane.setHalignment(chatMessage, HPos.LEFT);
+                        Platform.runLater(() -> chat.addRow(chat.getRowCount(), chatMessage));
+                    }
                     saveMsgToFile(strFromServer);
                 }
             } catch (Exception e) {
@@ -164,7 +200,6 @@ public class sampleController implements Initializable {
 
     @FXML
     public void saveMsgToFile(String msg) {
-        if (!msg.contains(":")) return;
         try (BufferedWriter in = new BufferedWriter(new FileWriter("chat-client/chathistory/" + myName + "_msg.txt", true))) {
             in.write(msg);
             in.newLine();
