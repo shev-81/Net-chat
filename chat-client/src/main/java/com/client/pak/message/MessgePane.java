@@ -5,8 +5,8 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 
-
 public class MessgePane extends GridPane {
+
     public MessgePane(String namePane) {
         super();
         setId(namePane);

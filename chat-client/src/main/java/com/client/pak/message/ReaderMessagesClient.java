@@ -6,25 +6,26 @@ import com.client.pak.Main;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.scene.layout.GridPane;
+
 import java.net.SocketException;
+
 import static com.client.pak.Connection.TIME_COUNT;
 
-public class ReaderMessages {
+public class ReaderMessagesClient {
 
     private Controller controller;
     private Connection connection;
     private Bubble chatMessage;
     private StringBuilder sb;
 
-
-    public ReaderMessages(Controller controller, Connection connection) {
+    public ReaderMessagesClient(Controller controller, Connection connection) {
         this.controller = controller;
         this.connection = connection;
     }
 
     public void read(String strFromServer, MessageType messageType) throws SocketException {
         String[] parts = strFromServer.split("\\s+");
-        switch (messageType){
+        switch (messageType) {
             case AUTHOK:
                 controller.loadListUsers(parts);
                 connection.getSocket().setSoTimeout(0);

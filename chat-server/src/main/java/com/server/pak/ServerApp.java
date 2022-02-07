@@ -20,8 +20,8 @@ public class ServerApp {
     private AuthService authService;
 
     ServerApp(){
-        clients = new ArrayList<>();                // инициализируем список
-        authService = new AuthServiceBD();          // инициализируем список возможжных User/ov на сервере
+        this.clients = new ArrayList<>();                // инициализируем список
+        this.authService = new AuthServiceBD();          // инициализируем список возможжных User/ov на сервере
         ExecutorService service = Executors.newCachedThreadPool();     //newFixedThreadPool(10);
         try(ServerSocket serverSocket = new ServerSocket(8189)){
             while(true){

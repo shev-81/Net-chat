@@ -1,7 +1,7 @@
 package com.client.pak;
 
 import com.client.pak.message.MessageType;
-import com.client.pak.message.ReaderMessages;
+import com.client.pak.message.ReaderMessagesClient;
 import javafx.application.Platform;
 import java.io.*;
 import java.net.Socket;
@@ -17,7 +17,7 @@ public class Connection implements Runnable {
     private String strFromServer;
     public static final int TIME_COUNT = 120000; // таймер в 2 минуты
     private Controller controller;
-    private ReaderMessages readerMessages;
+    private ReaderMessagesClient readerMessages;
 
     public Connection(Controller controller) {
         this.controller = controller;
@@ -26,7 +26,7 @@ public class Connection implements Runnable {
 
     @Override
     public void run() {
-        this.readerMessages = new ReaderMessages(controller, this);
+        this.readerMessages = new ReaderMessagesClient(controller, this);
         autorizQuestion();
         Platform.runLater(() -> controller.loadAllMsg());
         readMsg();
@@ -39,8 +39,7 @@ public class Connection implements Runnable {
             out = new DataOutputStream(socket.getOutputStream());
             socket.setSoTimeout(TIME_COUNT);
         } catch (SocketTimeoutException e) {
-            System.out.println("Пользователь был отключен из за бездействия!");
-            Platform.exit();
+            Platform.runLater(() -> controller.changeStageToAuth());
         } catch (SocketException e) {
             e.printStackTrace();
             Platform.exit();

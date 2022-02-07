@@ -357,10 +357,6 @@ public class Controller implements Initializable {
         });
     }
 
-    public ObservableList<UserCell> getListUserModel() {
-        return listUserModel;
-    }
-
     public void setMyName(String myName) {
         this.myName = myName;
     }

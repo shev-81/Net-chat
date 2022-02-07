@@ -2643,3 +2643,63 @@ INFO  2022-02-06 18:31:38 [main] com.server.pak.ServerApp (ServerApp.java:28) - 
 INFO  2022-02-06 18:31:38 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:74) - [Server]: Anna авторизовался.
 INFO  2022-02-06 18:32:19 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:89) - от Anna: /end
 INFO  2022-02-06 18:32:19 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:112) - [Server]: Anna disconnected!
+INFO  2022-02-06 22:15:28 [main] com.server.pak.AuthServiceBD (AuthServiceBD.java:42) - Загрузили пользователей из БД AuthServiceBD
+INFO  2022-02-06 22:15:28 [main] com.server.pak.ServerApp (ServerApp.java:28) - Server wait connected User.
+INFO  2022-02-06 22:15:48 [main] com.server.pak.ServerApp (ServerApp.java:30) - User connected.
+INFO  2022-02-06 22:15:48 [main] com.server.pak.ServerApp (ServerApp.java:28) - Server wait connected User.
+INFO  2022-02-06 22:15:48 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:74) - [Server]: Anna авторизовался.
+INFO  2022-02-06 22:16:15 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:89) - от Anna: /end
+INFO  2022-02-06 22:16:15 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:112) - [Server]: Anna disconnected!
+INFO  2022-02-06 23:44:33 [main] com.server.pak.AuthServiceBD (AuthServiceBD.java:42) - Загрузили пользователей из БД AuthServiceBD
+INFO  2022-02-06 23:44:33 [main] com.server.pak.ServerApp (ServerApp.java:28) - Server wait connected User.
+INFO  2022-02-06 23:44:49 [main] com.server.pak.ServerApp (ServerApp.java:30) - User connected.
+INFO  2022-02-06 23:44:49 [main] com.server.pak.ServerApp (ServerApp.java:28) - Server wait connected User.
+INFO  2022-02-06 23:44:49 [pool-2-thread-1] com.server.pak.ReaderMessagesServer (ReaderMessagesServer.java:34) - [Server]: Anna авторизовался.
+INFO  2022-02-06 23:45:03 [main] com.server.pak.ServerApp (ServerApp.java:30) - User connected.
+INFO  2022-02-06 23:45:03 [main] com.server.pak.ServerApp (ServerApp.java:28) - Server wait connected User.
+INFO  2022-02-06 23:45:03 [pool-2-thread-2] com.server.pak.ReaderMessagesServer (ReaderMessagesServer.java:34) - [Server]: AaaA авторизовался.
+INFO  2022-02-06 23:45:55 [pool-2-thread-2] com.server.pak.ClientHandler (ClientHandler.java:35) - Ошибка при создании слушателя клиента... 
+INFO  2022-02-06 23:45:57 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:35) - Ошибка при создании слушателя клиента... 
+INFO  2022-02-06 23:46:50 [main] com.server.pak.AuthServiceBD (AuthServiceBD.java:42) - Загрузили пользователей из БД AuthServiceBD
+INFO  2022-02-06 23:46:50 [main] com.server.pak.ServerApp (ServerApp.java:28) - Server wait connected User.
+INFO  2022-02-06 23:47:12 [main] com.server.pak.ServerApp (ServerApp.java:30) - User connected.
+INFO  2022-02-06 23:47:12 [main] com.server.pak.ServerApp (ServerApp.java:28) - Server wait connected User.
+INFO  2022-02-06 23:47:12 [pool-2-thread-1] com.server.pak.ReaderMessagesServer (ReaderMessagesServer.java:34) - [Server]: Anna авторизовался.
+INFO  2022-02-06 23:47:57 [main] com.server.pak.ServerApp (ServerApp.java:30) - User connected.
+INFO  2022-02-06 23:47:57 [main] com.server.pak.ServerApp (ServerApp.java:28) - Server wait connected User.
+INFO  2022-02-06 23:47:57 [pool-2-thread-2] com.server.pak.ReaderMessagesServer (ReaderMessagesServer.java:34) - [Server]: AaaA авторизовался.
+INFO  2022-02-06 23:48:57 [pool-2-thread-2] com.server.pak.ClientHandler (ClientHandler.java:36) - Ошибка при создании слушателя клиента... 
+INFO  2022-02-06 23:49:03 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:36) - Ошибка при создании слушателя клиента... 
+INFO  2022-02-07 00:00:54 [main] com.server.pak.AuthServiceBD (AuthServiceBD.java:42) - Загрузили пользователей из БД AuthServiceBD
+INFO  2022-02-07 00:00:54 [main] com.server.pak.ServerApp (ServerApp.java:28) - Server wait connected User.
+INFO  2022-02-07 00:01:11 [main] com.server.pak.ServerApp (ServerApp.java:30) - User connected.
+INFO  2022-02-07 00:01:11 [main] com.server.pak.ServerApp (ServerApp.java:28) - Server wait connected User.
+INFO  2022-02-07 00:01:11 [pool-2-thread-1] com.server.pak.ReaderMessagesServer (ReaderMessagesServer.java:34) - [Server]: AaaA авторизовался.
+INFO  2022-02-07 00:02:28 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:36) - Ошибка при создании слушателя клиента... 
+INFO  2022-02-07 00:02:46 [main] com.server.pak.AuthServiceBD (AuthServiceBD.java:42) - Загрузили пользователей из БД AuthServiceBD
+INFO  2022-02-07 00:02:46 [main] com.server.pak.ServerApp (ServerApp.java:28) - Server wait connected User.
+INFO  2022-02-07 00:02:58 [main] com.server.pak.ServerApp (ServerApp.java:30) - User connected.
+INFO  2022-02-07 00:02:58 [main] com.server.pak.ServerApp (ServerApp.java:28) - Server wait connected User.
+INFO  2022-02-07 00:02:58 [pool-2-thread-1] com.server.pak.ReaderMessagesServer (ReaderMessagesServer.java:34) - [Server]: AaaA авторизовался.
+INFO  2022-02-07 00:03:17 [main] com.server.pak.ServerApp (ServerApp.java:30) - User connected.
+INFO  2022-02-07 00:03:17 [main] com.server.pak.ServerApp (ServerApp.java:28) - Server wait connected User.
+INFO  2022-02-07 00:03:17 [pool-2-thread-2] com.server.pak.ReaderMessagesServer (ReaderMessagesServer.java:34) - [Server]: Anna авторизовался.
+INFO  2022-02-07 00:04:12 [pool-2-thread-2] com.server.pak.ClientHandler (ClientHandler.java:36) - Ошибка при создании слушателя клиента... 
+INFO  2022-02-07 00:10:39 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:36) - Ошибка при создании слушателя клиента... 
+INFO  2022-02-07 00:20:43 [main] com.server.pak.AuthServiceBD (AuthServiceBD.java:42) - Загрузили пользователей из БД AuthServiceBD
+INFO  2022-02-07 00:20:43 [main] com.server.pak.ServerApp (ServerApp.java:28) - Server wait connected User.
+INFO  2022-02-07 00:20:55 [main] com.server.pak.ServerApp (ServerApp.java:30) - User connected.
+INFO  2022-02-07 00:20:55 [main] com.server.pak.ServerApp (ServerApp.java:28) - Server wait connected User.
+INFO  2022-02-07 00:20:55 [pool-2-thread-1] com.server.pak.ReaderMessagesServer (ReaderMessagesServer.java:34) - [Server]: AaaA авторизовался.
+INFO  2022-02-07 00:21:14 [main] com.server.pak.ServerApp (ServerApp.java:30) - User connected.
+INFO  2022-02-07 00:21:14 [main] com.server.pak.ServerApp (ServerApp.java:28) - Server wait connected User.
+INFO  2022-02-07 00:21:14 [pool-2-thread-2] com.server.pak.ReaderMessagesServer (ReaderMessagesServer.java:34) - [Server]: Anna авторизовался.
+INFO  2022-02-07 00:21:18 [pool-2-thread-2] com.server.pak.ClientHandler (ClientHandler.java:98) - от Anna: asdfasdf
+INFO  2022-02-07 00:21:27 [pool-2-thread-2] com.server.pak.ClientHandler (ClientHandler.java:98) - от Anna: hellow
+INFO  2022-02-07 00:21:30 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:98) - от AaaA: hi hi
+INFO  2022-02-07 00:21:38 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:98) - от AaaA: /personal Anna AaaA hi iam here
+INFO  2022-02-07 00:21:44 [pool-2-thread-2] com.server.pak.ClientHandler (ClientHandler.java:98) - от Anna: /personal AaaA Anna i am too
+INFO  2022-02-07 00:21:49 [pool-2-thread-1] com.server.pak.ClientHandler (ClientHandler.java:98) - от AaaA: /end
+INFO  2022-02-07 00:21:49 [pool-2-thread-1] com.server.pak.ReaderMessagesServer (ReaderMessagesServer.java:47) - [Server]: AaaA disconnected!
+INFO  2022-02-07 00:22:02 [pool-2-thread-2] com.server.pak.ClientHandler (ClientHandler.java:98) - от Anna: /end
+INFO  2022-02-07 00:22:02 [pool-2-thread-2] com.server.pak.ReaderMessagesServer (ReaderMessagesServer.java:47) - [Server]: Anna disconnected!
