@@ -1,23 +1,21 @@
 package com.client.pak;
 
-import com.client.pak.message.MessageType;
-import com.client.pak.message.ReaderMessagesClient;
 import javafx.application.Platform;
 import java.io.*;
 import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
+import message.*;
 
 public class Connection implements Runnable {
+
     private final String SERVER_ADDR = "localhost";  //192.168.1.205";
     private final int SERVER_PORT = 8189;
     private Socket socket;
-    private DataInputStream in;
-    private DataOutputStream out;
-    private String strFromServer;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
     public static final int TIME_COUNT = 120000; // таймер в 2 минуты
     private Controller controller;
-    private ReaderMessagesClient readerMessages;
+    public ReaderMessagesClient readerMessages;
+    private Message message;
 
     public Connection(Controller controller) {
         this.controller = controller;
@@ -35,87 +33,42 @@ public class Connection implements Runnable {
     public void openConnection() {
         try {
             socket = new Socket(SERVER_ADDR, SERVER_PORT);
-            in = new DataInputStream(socket.getInputStream());
-            out = new DataOutputStream(socket.getOutputStream());
+            out = new ObjectOutputStream(socket.getOutputStream());
+            in = new ObjectInputStream(socket.getInputStream());
             socket.setSoTimeout(TIME_COUNT);
-        } catch (SocketTimeoutException e) {
-            Platform.runLater(() -> controller.changeStageToAuth());
-        } catch (SocketException e) {
-            e.printStackTrace();
-            Platform.exit();
         } catch (IOException e) {
             e.printStackTrace();
-            Platform.exit();
         }
     }
 
     public void autorizQuestion() {
-        // запускаем в основном потоке приложения слушатель сообщения о подтверждении авторизации с сервера
         try {
-            while (true) {
-                strFromServer = in.readUTF();
-                if (strFromServer.startsWith("/authok")) {
-                    readerMessages.read(strFromServer, MessageType.AUTHOK);
-                    break;
-                }
-                if (strFromServer.startsWith("/uname")) {
-                    readerMessages.read(strFromServer, MessageType.UNAME);
-                    continue;
-                }
-                if (strFromServer.startsWith("/authno")) {
-                    readerMessages.read(strFromServer, MessageType.AUTHNO);
-                    continue;
-                }
+            boolean chek = true;
+            while (chek) {
+                message = (Message) in.readObject();
+                chek = readerMessages.read(message);
             }
-        } catch (SocketTimeoutException e) {
-            System.out.println("Пользователь был отключен из за бездействия.");
-            Platform.exit();
         } catch (Exception e) {
-            e.printStackTrace();
-            Platform.exit();
+            controller.changeStageToAuth();
         }
     }
 
     public void readMsg() {
         try {
-            while (true) {
-                strFromServer = in.readUTF();
-                String[] parts = strFromServer.split("\\s+");
-                if (strFromServer.startsWith("/conected")) {             // при соединении нового пользователя обновляем список активных пользователей
-                    readerMessages.read(strFromServer, MessageType.CONECTED);
-                    continue;
-                }
-                if (strFromServer.startsWith("/disconected")) {          // при Отсоединении пользователя обновляем список активных пользователей
-                    readerMessages.read(strFromServer, MessageType.DISCONECTED);
-                    continue;
-                }
-                if (strFromServer.startsWith("/changename")) {
-                    readerMessages.read(strFromServer, MessageType.CHANGENAME);
-                    continue;
-                }
-                if (strFromServer.startsWith("/personal")) {             //personal от кого и само сообщение
-                    readerMessages.read(strFromServer, MessageType.PERSONAL);
-                    continue;
-                }
-                if (!parts[0].equals(controller.getMyName())) {
-                    readerMessages.read(strFromServer, MessageType.UMESSAGE);
-                }
-                controller.saveMsgToFile(strFromServer);
+            boolean chek = true;
+            while (chek) {
+                message = (Message) in.readObject();
+                chek = readerMessages.read(message);
             }
-        } catch (SocketException e) {
-            e.toString();
-            System.out.println("socket close ");
-            controller.changeStageToAuth();
         } catch (Exception e) {
-            e.printStackTrace();
             controller.changeStageToAuth();
-            Platform.exit();
         }
     }
 
-    public void sendMessage(String str) {
+    public void sendMessage(Message message) {
         try {
-            out.writeUTF(str);
+            out.writeObject(message);
+            out.reset();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,4 +1,4 @@
-package com.client.pak.message;
+package message;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

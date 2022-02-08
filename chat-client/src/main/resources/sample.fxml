@@ -107,7 +107,7 @@
                                     <Insets />
                                 </opaqueInsets>
                             </HBox>
-                            <ListView fx:id="listFx" onMouseClicked="#moseClickOnListItem" focusTraversable="false" prefHeight="380.0" prefWidth="220.0" stylesheets="@chat.css">
+                            <ListView fx:id="listFx" onMouseClicked="#moseClickOnListItem" focusTraversable="false" prefHeight="600.0" prefWidth="220.0" stylesheets="@chat.css">
                                 <opaqueInsets>
                                     <Insets />
                                 </opaqueInsets>

@@ -1,4 +1,4 @@
-package com.client.pak.message;
+package message;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,6 +17,5 @@ public class MessgePane extends GridPane {
         col1.setMinWidth(10.0);
         col1.setPercentWidth(100.0);
         getColumnConstraints().addAll(col1);
-
     }
 }

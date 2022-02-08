@@ -50,9 +50,7 @@ public class AuthServiceBD implements AuthService {
     public boolean registerNewUser(String nickName, String login, String pass) {
         int result = 0;
         try {
-            // регистрируем нового пользователя в БД
             result = stmt.executeUpdate("INSERT INTO users (NickName, login, pass) VALUES ('" + nickName + "','" + login + "','" + pass + "');");
-            // регистрируем нового пользователя в листе AuthServiceBD
             listUser.add(new User(nickName, login, pass));
         } catch (SQLException e) {
             LOGGER.throwing(Level.ERROR, e);
@@ -64,7 +62,6 @@ public class AuthServiceBD implements AuthService {
         int result = 0;
         try {
             result = stmt.executeUpdate("UPDATE users SET NickName = '" + newName + "' WHERE NickName = '" + oldName + "';");
-            // если операция в бд свершилась то меняем в памяти сервера
             if(result > 0){
                 for (int i = 0; i < listUser.size(); i++) {
                     if(listUser.get(i).getName().equals(oldName)){
@@ -120,9 +117,5 @@ public class AuthServiceBD implements AuthService {
                 return user.name;
         }
         return null;
-    }
-
-    public static Statement getStmt() {
-        return stmt;
     }
 }

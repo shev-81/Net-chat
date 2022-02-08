@@ -1,4 +1,4 @@
-package com.client.pak.message;
+package message;
 
 import java.io.Serializable;
 
@@ -35,7 +35,4 @@ public class UserCell implements Serializable {
         ", status='" + status + '\'' +
         '}';
   }
-
-
-
 }

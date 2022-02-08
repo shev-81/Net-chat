@@ -1,5 +1,6 @@
 package com.server.pak;
 
+import message.Message;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.sql.SQLException;
@@ -13,68 +14,97 @@ public class ReaderMessagesServer {
         this.server = server;
     }
 
-    public boolean read(String strFromServer, MessageType messageType, ClientHandler clientHandler) throws SQLException {
-        String[] parts = strFromServer.split("\\s+");
-        switch (messageType) {
-            case AUTH:
-                String nickName;
-                try {
-                    nickName = server.getAuthService().getNickByLoginPass(parts[1], parts[2]);
-                    clientHandler.setNickName(nickName);
-                } catch (Exception e) {
-                    nickName = null;
-                }
-                if (nickName != null) {
-                    if (!server.isNickBusy(nickName)) {
-                        clientHandler.setName(nickName);
-                        server.sendAll("/conected " + nickName);
-                        server.subscribe(clientHandler);
-                        clientHandler.sendMessage("/uname " + nickName);
-                        clientHandler.sendMessage("/authok " + server.getClientsList());
-                        LOGGER.info("[Server]: " + nickName + " авторизовался.");
-                        return true;
-                    } else {
-                        clientHandler.sendMessage("/authno");
-                        return false;
-                    }
-                } else {
-                    clientHandler.sendMessage("/authno");
-                    return false;
-                }
-            case END:
-                server.unSubscribe(clientHandler);
-                server.sendAll("/disconected " + clientHandler.getName());
-                LOGGER.info("[Server]: " + clientHandler.getName() + " disconnected!");
-                break;
-            case REGUSER:
-                if (server.getAuthService().registerNewUser(parts[1], parts[2], parts[3])) {
-                    clientHandler.setName(parts[1]);
-                    server.sendAll("/conected " + parts[1]);
-                    server.subscribe(clientHandler);
-                    clientHandler.sendMessage("/authok " + server.getClientsList());
-                    clientHandler.sendMessage("/uname " + parts[1]);
-                    return true;
-                } else {
-                    LOGGER.info("[Server]: регистрация нового пользователя не прошла");
-                    clientHandler.sendMessage("/authno");
-                    return false;
-                }
-            case CHANGENAME:
-                LOGGER.info("[Server]: "+ strFromServer + " запрос на смену имени");
-                boolean rezult = server.getAuthService().updateNickName(parts[1], parts[2]);
-                if(rezult) {
-                    server.sendAll("/changename " + parts[1] + " " + parts[2]);
-                    LOGGER.info("[Server]: "+ strFromServer + " запрос на смену имени УДОВЛЕТВОРЕН");
-                    clientHandler.setName(parts[1]);
-                    return true;
-                }else{
-                    LOGGER.warn("[Server]: "+ strFromServer + " запрос на смену имени НЕ УДОВЛЕТВОРЕН");
-                    return false;
-                }
-            case PERSONAL:
-                clientHandler.sendPrivateMessage(strFromServer);
-                break;
+    public boolean read(Message message, ClientHandler clientHandler) throws SQLException {
+        Message.MessageType type = message.getType();
+        switch (type) {
+            case AUTH: return auth(message, clientHandler);
+            case REGUSER: return regUser(message, clientHandler);
+            case END: end(clientHandler); break;
+            case CHANGENAME: changeName(message, clientHandler); break;
+            case PERSONAL: personal(message, clientHandler); break;
+            case UMESSAGE: uMessage (message); break;
+            case STATUS: status(message); break;
         }
         return true;
+    }
+
+    public boolean auth(Message message, ClientHandler clientHandler){
+        String nickName;
+        try {
+            nickName = server.getAuthService().getNickByLoginPass(message.getLogin(), message.getPass());
+        } catch (Exception e) {
+            nickName = null;
+        }
+        if (nickName != null) {
+            if (!server.isNickBusy(nickName)) {
+                clientHandler.setName(nickName);
+                server.subscribe(clientHandler);
+                message = new Message(Message.MessageType.AUTHOK);
+                message.setNameU(nickName);
+                message.setUsersList(server.getClientsList());
+                clientHandler.sendMessage(message);
+                message = new Message(Message.MessageType.CONECTED);
+                message.setNameU(nickName);
+                server.sendAll(message);
+                LOGGER.info("[Server]: " + nickName + " авторизовался.");
+                return false;
+            } else {
+                clientHandler.sendMessage(new Message(Message.MessageType.AUTHNO));
+                return true;
+            }
+        } else {
+            clientHandler.sendMessage(new Message(Message.MessageType.AUTHNO));
+            return true;
+        }
+    }
+
+    public boolean regUser(Message message, ClientHandler clientHandler){
+        if (server.getAuthService().registerNewUser(message.getNameU(), message.getLogin(), message.getPass())) {
+            clientHandler.setName(message.getNameU());
+            message.setType(Message.MessageType.CONECTED);
+            server.sendAll(message);
+            server.subscribe(clientHandler);
+            message.setType(Message.MessageType.AUTHOK);
+            message.setUsersList(server.getClientsList());
+            clientHandler.sendMessage(message);
+            return false;
+        } else {
+            LOGGER.info("[Server]: регистрация нового пользователя не прошла");
+            message.setType(Message.MessageType.AUTHNO);
+            clientHandler.sendMessage(message);
+            return true;
+        }
+    }
+
+    public void end(ClientHandler clientHandler){
+        server.unSubscribe(clientHandler);
+        Message message = new Message(Message.MessageType.DISCONECTED);
+        message.setNameU(clientHandler.getName());
+        server.sendAll(message);
+        LOGGER.info("[Server]: " + clientHandler.getName() + " disconnected!");
+    }
+
+    public void changeName(Message message, ClientHandler clientHandler) throws SQLException {
+        LOGGER.info("[Server]: " + message.getNameU() + " запросил на смену имени на " + message.getToNameU());
+        boolean rezult = server.getAuthService().updateNickName(message.getToNameU(), message.getNameU());    //   String newName,  String oldName
+        if (rezult) {
+            clientHandler.setName(message.getToNameU());
+            server.sendAll(message);
+            LOGGER.info("[Server]: Запрос на смену имени с " + message.getNameU() + " на " + message.getToNameU() + " УДОВЛЕТВОРЕН");
+        } else {
+            LOGGER.info("[Server]: Запрос на смену имени с " + message.getNameU() + " на " + message.getToNameU() + " НЕ УДОВЛЕТВОРЕН");
+        }
+    }
+
+    public void personal(Message message, ClientHandler clientHandler){
+        clientHandler.sendPrivateMessage(message);
+    }
+
+    public void uMessage(Message message){
+        server.sendAll(message);
+    }
+
+    public void status (Message message){
+        server.sendAll(message);
     }
 }

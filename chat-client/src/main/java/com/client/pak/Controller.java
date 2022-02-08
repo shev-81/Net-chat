@@ -1,9 +1,6 @@
 package com.client.pak;
 
-import com.client.pak.message.Bubble;
-import com.client.pak.message.CellRenderer;
-import com.client.pak.message.MessgePane;
-import com.client.pak.message.UserCell;
+import message.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -21,18 +18,21 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+
 import java.io.*;
 import java.net.URL;
 import java.util.*;
 
 public class Controller implements Initializable {
+
     private Connection connection;
     private String strFromClient;
     private String myName;
     private ObservableList<UserCell> listUserModel;
     private List<UserCell> userList;
-    private Map<String, GridPane> messgePanes;
+    private Map<String, GridPane> messagePanes;
     private String useNowPane;
+    private Message message;
 
     @FXML
     GridPane regPane;
@@ -49,20 +49,21 @@ public class Controller implements Initializable {
 
     @FXML
     ScrollPane scrollPane;
-
-    @FXML
-    TextField authLogin;
-    @FXML
-    PasswordField authPassword;
     @FXML
     ListView<UserCell> listFx;
     @FXML
     TextField textField;
     @FXML
+    TextField status;
+    @FXML
     HBox chatPane;
     @FXML
     GridPane chat;
 
+    @FXML
+    TextField authLogin;
+    @FXML
+    PasswordField authPassword;
     @FXML
     GridPane authPane;
     @FXML
@@ -79,9 +80,10 @@ public class Controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         changeStageToAuth();
         scrollPane.setFitToWidth(true);
-        messgePanes = new HashMap();
-        messgePanes.put("Общий чат", chat);
+        messagePanes = new HashMap();
+        messagePanes.put("Общий чат", chat);
         useNowPane = "Общий чат";
+        userList = new ArrayList<>();
     }
 
     @FXML
@@ -89,24 +91,31 @@ public class Controller implements Initializable {
         if (!textField.getText().trim().isEmpty()) {
             strFromClient = textField.getText();
             Bubble chatMessage = new Bubble(myName, strFromClient, "");
-            messgePanes.get(useNowPane).setHalignment(chatMessage, HPos.RIGHT);
-            messgePanes.get(useNowPane).setValignment(chatMessage, VPos.BOTTOM);
+            messagePanes.get(useNowPane).setHalignment(chatMessage, HPos.RIGHT);
+            messagePanes.get(useNowPane).setValignment(chatMessage, VPos.BOTTOM);
             Platform.runLater(() -> {
-                messgePanes.get(useNowPane).addRow(messgePanes.get(useNowPane).getRowCount(), chatMessage);
+                messagePanes.get(useNowPane).addRow(messagePanes.get(useNowPane).getRowCount(), chatMessage);
                 scrollDown();
             });
-            if(useNowPane.equals("Общий чат")){                             // если чат общий то посылаем обычное сообщение
-                connection.sendMessage(strFromClient);
-            }else{                                                          // если сообщение персональное то: /personal кому отКого и самоСообщение
-                connection.sendMessage("/personal " + useNowPane + " " + myName + " " + strFromClient);
+            if (useNowPane.equals("Общий чат")) {
+                message = new Message(Message.MessageType.UMESSAGE);
+            } else {
+                message = new Message(Message.MessageType.PERSONAL);
+                message.setToNameU(useNowPane);
             }
+            message.setNameU(myName);
+            message.setText(strFromClient);
+            saveMsgToFile(myName + " " + strFromClient);
+            connection.sendMessage(message);
             textField.clear();
             textField.requestFocus();
         }
     }
 
-    public void sendDisconnect(MouseEvent mouseEvent) throws IOException {
-        connection.sendMessage("/end");
+    public void sendDisconnect(MouseEvent mouseEvent) {
+        connection.sendMessage(new Message(Message.MessageType.END));
+        userList.clear();
+        listFx.refresh();
         connection.closeConnection();
         connection = null;
         myName = " ";
@@ -124,15 +133,15 @@ public class Controller implements Initializable {
         setPane.setVisible(true);
     }
 
-    public void sendStatus() throws IOException {
-//        if (!status.getText().strip().isEmpty()) {
-//            Message message = new Message();
-//            message.setMessageType(MessageType.LIST);
-//            message.setText(status.getText());
-//            connection.send(message);
-//            status.clear();
-//        }
-        System.out.println("sendStatus");
+    public void sendStatus() {
+        if (!status.getText().strip().isEmpty()) {
+            Message message = new Message();
+            message.setType(Message.MessageType.STATUS);
+            message.setText(status.getText());
+            message.setNameU(myName);
+            connection.sendMessage(message);
+            status.clear();
+        }
     }
 
     public void enterChat(ActionEvent event) {
@@ -144,7 +153,10 @@ public class Controller implements Initializable {
             authMessage.setText("Enter login and password");
             authMessage.setVisible(true);
         } else {
-            connection.sendMessage("/auth " + authLogin.getText() + " " + authPassword.getText());
+            message = new Message(Message.MessageType.AUTH);
+            message.setLogin(authLogin.getText());
+            message.setPass(authPassword.getText());
+            connection.sendMessage(message);
         }
     }
 
@@ -183,18 +195,17 @@ public class Controller implements Initializable {
 
     public void loadListUsers(String[] parts) {
         listUserModel = null;
-        userList = new ArrayList<>();
         userList.add(new UserCell("Общий чат", "посетителей"));
-        for (int i = 1; i < parts.length; i++) {                            //создаем и наполняем список пользователей
-            if(parts[i].equals(myName)){                                    //если мое имя совпадает с именем в списке то пропускаем его
+        for (int i = 0; i < parts.length; i++) {
+            if (parts[i].equals(myName)) {
                 continue;
             }
-            userList.add(new UserCell(parts[i], "On line"));          // добавляем пользователей в список он-лайн пользователей
-            messgePanes.put(parts[i], new MessgePane(parts[i]));            // добавляем панель личных сообщений для юзера
+            userList.add(new UserCell(parts[i], "On line"));
+            messagePanes.put(parts[i], new MessgePane(parts[i]));
         }
         listUserModel = FXCollections.observableArrayList(userList);
         Platform.runLater(() -> {
-            listFx.setItems(listUserModel);                       // Устанавливаем список зарегистрированных пользователей для своего клиента
+            listFx.setItems(listUserModel);
             listFx.setCellFactory(new CellRenderer());
         });
     }
@@ -214,7 +225,11 @@ public class Controller implements Initializable {
             regMessage.setText("Passwords do not match");
             regMessage.setVisible(true);
         } else {
-            connection.sendMessage("/reguser " + regName.getText() + " " + regLogin.getText() + " " + regPassword.getText());
+            message = new Message(Message.MessageType.REGUSER);
+            message.setNameU(regName.getText());
+            message.setLogin(regLogin.getText());
+            message.setPass(regPassword.getText());
+            connection.sendMessage(message);
         }
     }
 
@@ -227,19 +242,21 @@ public class Controller implements Initializable {
     }
 
     public void moseClickOnListItem(MouseEvent mouseEvent) {
-        String nameUser = listFx.getSelectionModel().getSelectedItem().getName();
-        scrollPane.setContent(messgePanes.get(nameUser));
-        useNowPane = nameUser;
+        try {
+            String nameUser = listFx.getSelectionModel().getSelectedItem().getName();
+            scrollPane.setContent(messagePanes.get(nameUser));
+            useNowPane = nameUser;
+        } catch (NullPointerException e) {
+        }
     }
 
-    public void saveAccChanges(ActionEvent event) throws IOException {
+    public void saveAccChanges(ActionEvent event) {
         if (!setName.getText().isEmpty()) {
             new Thread(() -> {
                 try {
-                    if (!setName.getText().trim().isEmpty() && !setName.getText().trim().equals(myName)) {  // если сообщение не пустое и не свой ник то проверяем его с никами в сети
+                    if (!setName.getText().trim().isEmpty() && !setName.getText().trim().equals(myName)) {
                         for (UserCell userInList : userList) {
-                            String nameUserInList = userInList.getName();
-                            if (setName.getText().trim().equals(nameUserInList.trim())) {
+                            if (setName.getText().trim().equals(userInList.getName())) {
                                 Platform.runLater(() -> {
                                     setMessage.setTextFill(Color.RED);
                                     setMessage.setText("Error change name.");
@@ -249,14 +266,15 @@ public class Controller implements Initializable {
                             }
                         }
                         Platform.runLater(() -> Main.getpStage().setTitle("Net-chat:  " + setName.getText()));
-                        connection.sendMessage("/changename " + setName.getText() + " "+ myName );
-                        myName = setName.getText();
+                        message = new Message(Message.MessageType.CHANGENAME);
+                        message.setNameU(myName);
+                        message.setToNameU(setName.getText());
+                        connection.sendMessage(message);
                         Platform.runLater(() -> {
                             setMessage.setTextFill(Color.GREEN);
                             setMessage.setText("Name change accepted.");
                             setMessage.setVisible(true);
                         });
-
                     } else {
                         Platform.runLater(() -> {
                             setMessage.setTextFill(Color.RED);
@@ -326,12 +344,16 @@ public class Controller implements Initializable {
         return connection;
     }
 
-    public Map<String, GridPane> getMessgePanes() {
-        return messgePanes;
+    public Map<String, GridPane> getMessagePanes() {
+        return messagePanes;
     }
 
     public String getMyName() {
         return myName;
+    }
+
+    public TextField getStatus() {
+        return status;
     }
 
     public void addUserInListFx(String userName) {
@@ -355,6 +377,15 @@ public class Controller implements Initializable {
             listFx.setItems(users);
             listFx.setCellFactory(new CellRenderer());
         });
+    }
+
+    public void upDateUserList(Message message) {
+        for (UserCell u : userList) {
+            if (u.getName().equals(message.getNameU())) {
+                u.setStatus(message.getText());
+            }
+        }
+        listFx.refresh();
     }
 
     public void setMyName(String myName) {

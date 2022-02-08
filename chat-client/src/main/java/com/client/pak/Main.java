@@ -1,5 +1,6 @@
 package com.client.pak;
 
+import message.Message;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -28,7 +29,7 @@ public class Main extends Application {
     public void stop() {
         try{
             controller = loader.getController();
-            controller.getConnection().sendMessage("/end");
+            controller.getConnection().sendMessage(new Message(Message.MessageType.END));
             controller.getConnection().closeConnection();
         }catch (NullPointerException e){}
     }
